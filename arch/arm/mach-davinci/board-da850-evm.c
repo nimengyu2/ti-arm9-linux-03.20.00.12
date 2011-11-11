@@ -46,7 +46,7 @@
 #define DA850_EVM_MDIO_FREQUENCY	2200000 /* PHY bus frequency */
 
 #define DA850_LCD_PWR_PIN		GPIO_TO_PIN(2, 8)
-#define DA850_LCD_BL_PIN		GPIO_TO_PIN(2, 15)
+#define DA850_LCD_BL_PIN			GPIO_TO_PIN(2, 8)
 
 #define DA850_MMCSD_CD_PIN		GPIO_TO_PIN(4, 0)
 #define DA850_MMCSD_WP_PIN		GPIO_TO_PIN(4, 1)
@@ -655,7 +655,7 @@ static int da850_lcd_hw_init(void)
 }
 
 static const short da850_evm_lcdc_pins[] = {
-	DA850_GPIO2_8, DA850_GPIO2_15,
+	DA850_GPIO2_8, /*DA850_GPIO2_15,*/
 	-1
 };
 
@@ -665,7 +665,12 @@ static int __init da850_evm_config_emac(void)
 	int ret;
 	u32 val;
 	struct davinci_soc_info *soc_info = &davinci_soc_info;
-	u8 rmii_en = soc_info->emac_pdata->rmii_en;
+	//u8 rmii_en = soc_info->emac_pdata->rmii_en;
+	 // Modify by toby.zhang @2011.01.09
+	u8 rmii_en;
+	soc_info->emac_pdata->rmii_en = 1;
+	rmii_en = soc_info->emac_pdata->rmii_en;
+
 
 	if (!machine_is_davinci_da850_evm())
 		return 0;
@@ -1141,7 +1146,7 @@ static __init void da850_evm_init(void)
 	 */
 //	__raw_writel(0, IO_ADDRESS(DA8XX_UART1_BASE) + 0x30);
 //	__raw_writel(0, IO_ADDRESS(DA8XX_UART0_BASE) + 0x30);
-
+/*
 	if (HAS_MCBSP0) {
 		if (HAS_EMAC)
 			pr_warning("WARNING: both MCBSP0 and EMAC are "
@@ -1190,7 +1195,7 @@ static __init void da850_evm_init(void)
 		pr_warning("da850_evm_init: lcdcntl mux setup failed: %d\n",
 				ret);
 
-	/* Handle board specific muxing for LCD here */
+	// Handle board specific muxing for LCD here //
 	ret = da8xx_pinmux_setup(da850_evm_lcdc_pins);
 	if (ret)
 		pr_warning("da850_evm_init: evm specific lcd mux setup "
@@ -1206,7 +1211,7 @@ static __init void da850_evm_init(void)
 	if (ret)
 		pr_warning("da850_evm_init: lcdc registration failed: %d\n",
 				ret);
-
+*/
 	ret = da8xx_register_rtc();
 	if (ret)
 		pr_warning("da850_evm_init: rtc setup failed: %d\n", ret);
@@ -1225,7 +1230,7 @@ static __init void da850_evm_init(void)
 	if (ret)
 		pr_warning("da850_evm_init: suspend registration failed: %d\n",
 				ret);
-
+/*
 	ret = da8xx_pinmux_setup(da850_spi1_pins);
 	if (ret)
 		pr_warning("da850_evm_init: spi1 mux setup failed: %d\n",
@@ -1233,9 +1238,9 @@ static __init void da850_evm_init(void)
 
 	da850_init_spi1(BIT(0), da850_spi_board_info,
 			ARRAY_SIZE(da850_spi_board_info));
-
+*/
 	da850_evm_usb_init();
-
+/*
 	ret = da8xx_register_sata();
 	if (ret)
 		pr_warning("da850_evm_init: SATA registration failed: %d\n",
@@ -1273,6 +1278,7 @@ static __init void da850_evm_init(void)
 					"%d\n",	ret);
 
 	}
+*/
     ret = davinci_cfg_reg(DA850_ECAP2_APWM2);
     if (ret)
         pr_warning("da850_evm_init:ecap mux failed: %d\n", ret);

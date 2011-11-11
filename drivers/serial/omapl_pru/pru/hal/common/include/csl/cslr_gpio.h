@@ -214,7 +214,7 @@ typedef volatile CSL_GpioRegs         *CSL_GpioRegsOvly;
 #define GP7P14 (1 << 30)
 #define GP7P15 (1 << 31)
 
-#if defined(CHIP_C6748) || defined(CHIP_OMPL138)
+//#if defined(CHIP_C6748) || defined(CHIP_OMPL138)
 #define GP8P0  (1 <<  0)
 #define GP8P1  (1 <<  1)
 #define GP8P2  (1 <<  2)
@@ -231,7 +231,7 @@ typedef volatile CSL_GpioRegs         *CSL_GpioRegsOvly;
 #define GP8P13 (1 << 13)
 #define GP8P14 (1 << 14)
 #define GP8P15 (1 << 15)
-#endif
+//#endif
 
 
 /**************************************************************************\

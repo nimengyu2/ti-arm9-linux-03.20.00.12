@@ -42,7 +42,7 @@ extern "C" {
 
 #define	 SINGLE_PRU		0
 #define  BOTH_PRU		1
-#define  PRU_ACTIVE		SINGLE_PRU
+#define  PRU_ACTIVE		BOTH_PRU
 
 #define SUART_NUM_OF_CHANNELS_PER_SUART		2
 #define SUART_NUM_OF_BYTES_PER_CHANNEL		16

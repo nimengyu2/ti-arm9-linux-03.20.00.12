@@ -898,7 +898,7 @@ enum davinci_da850_index {
     DA850_PRU1_R30_15,
     DA850_PRU1_R31_18,
     DA850_PRU0_R31_20,
-    DA850_PRU0_R30_20,
+    //DA850_PRU0_R30_20,
     DA850_PRU0_R30_16,
 	/* SPI1 function */
 	DA850_SPI1_CS_0,
@@ -983,6 +983,11 @@ enum davinci_da850_index {
     DA850_ECAP0_APWM0,
     DA850_ECAP1_APWM1,
     DA850_ECAP2_APWM2,
+
+     // pru pin use for suart ttySU0-ttySU3 485 dir control
+    DA850_PRU0_R30_19,
+    DA850_PRU0_R30_20,
+    DA850_PRU0_R30_23,
 
 };
 
