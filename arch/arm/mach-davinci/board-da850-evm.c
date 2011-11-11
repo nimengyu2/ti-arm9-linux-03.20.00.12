@@ -665,7 +665,12 @@ static int __init da850_evm_config_emac(void)
 	int ret;
 	u32 val;
 	struct davinci_soc_info *soc_info = &davinci_soc_info;
-	u8 rmii_en = soc_info->emac_pdata->rmii_en;
+	//u8 rmii_en = soc_info->emac_pdata->rmii_en;
+	 // Modify by toby.zhang @2011.01.09
+	u8 rmii_en;
+	soc_info->emac_pdata->rmii_en = 1;
+	rmii_en = soc_info->emac_pdata->rmii_en;
+
 
 	if (!machine_is_davinci_da850_evm())
 		return 0;

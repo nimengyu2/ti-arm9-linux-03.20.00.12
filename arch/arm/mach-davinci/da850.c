@@ -510,7 +510,7 @@ static const struct mux_config da850_pins[] = {
 	MUX_CFG(DA850, I2C0_SDA,	4,	12,	15,	2,	false)
 	MUX_CFG(DA850, I2C0_SCL,	4,	8,	15,	2,	false)
 	/* EMAC function */
-	MUX_CFG(DA850, MII_TXEN,	2,	4,	15,	8,	false)
+	MUX_CFG(DA850, MII_TXEN,		2,	4,	15,	8,	false)
 	MUX_CFG(DA850, MII_TXCLK,	2,	8,	15,	8,	false)
 	MUX_CFG(DA850, MII_COL,		2,	12,	15,	8,	false)
 	MUX_CFG(DA850, MII_TXD_3,	2,	16,	15,	8,	false)
@@ -663,10 +663,10 @@ static const struct mux_config da850_pins[] = {
 	/* McBSP0 function */
 	MUX_CFG(DA850,	MCBSP0_CLKR,	2,	4,	15,	2,	false)
 	MUX_CFG(DA850,	MCBSP0_CLKX,	2,	8,	15,	2,	false)
-	MUX_CFG(DA850,	MCBSP0_FSR,	2,	12,	15,	2,	false)
-	MUX_CFG(DA850,	MCBSP0_FSX,	2,	16,	15,	2,	false)
-	MUX_CFG(DA850,	MCBSP0_DR,	2,	20,	15,	2,	false)
-	MUX_CFG(DA850,	MCBSP0_DX,	2,	24,	15,	2,	false)
+	MUX_CFG(DA850,	MCBSP0_FSR,		2,	12,	15,	2,	false)
+	MUX_CFG(DA850,	MCBSP0_FSX,		2,	16,	15,	2,	false)
+	MUX_CFG(DA850,	MCBSP0_DR,		2,	20,	15,	2,	false)
+	MUX_CFG(DA850,	MCBSP0_DX,		2,	24,	15,	2,	false)
 	MUX_CFG(DA850,	MCBSP0_CLKS,	2,	28,	15,	0,	false)
 	/* McBSP1 function */
 	MUX_CFG(DA850,	MCBSP1_CLKR,	1,	4,	15,	2,	false)
@@ -746,9 +746,10 @@ const short da850_pru_suart_pins[] __initdata = {
 	DA850_AHCLKX, DA850_ACLKX, DA850_AFSX,
 	//    DA850_AHCLKR, DA850_ACLKR, DA850_AFSR,
 	DA850_AHCLKR, DA850_PRU0_R30_20, DA850_PRU0_R31_20,
-    DA850_AXR_13, DA850_AXR_9, DA850_AXR_7,
-	DA850_AXR_14, DA850_AXR_10, DA850_AXR_8,
-    DA850_AXR_11, DA850_AXR_12,
+   	 // nmy modify
+	DA850_AXR_0,DA850_AXR_1,DA850_AXR_3,DA850_AXR_4,DA850_AXR_5,DA850_AXR_6,
+	DA850_AXR_7,DA850_AXR_8,DA850_AXR_9, DA850_AXR_10,DA850_AXR_11, DA850_AXR_12,
+    	DA850_AXR_13, DA850_AXR_14,  DA850_AXR_15,    
 	DA850_UART1_RXD, DA850_UART1_TXD, DA850_PRU0_R30_16
 	-1
 };
@@ -774,8 +775,8 @@ const short da850_i2c1_pins[] __initdata = {
 };
 
 const short da850_cpgmac_pins[] __initdata = {
-	DA850_MII_TXEN, DA850_MII_TXCLK, DA850_MII_COL, DA850_MII_TXD_3,
-	DA850_MII_TXD_2, DA850_MII_TXD_1, DA850_MII_TXD_0, DA850_MII_RXER,
+	/*DA850_MII_TXEN, DA850_MII_TXCLK, DA850_MII_COL, DA850_MII_TXD_3,
+	DA850_MII_TXD_2, DA850_MII_TXD_1, DA850_MII_TXD_0, */DA850_MII_RXER,
 	DA850_MII_CRS, DA850_MII_RXCLK, DA850_MII_RXDV, DA850_MII_RXD_3,
 	DA850_MII_RXD_2, DA850_MII_RXD_1, DA850_MII_RXD_0, DA850_MDIO_CLK,
 	DA850_MDIO_D,
@@ -844,8 +845,8 @@ const short da850_spi1_pins[] __initdata = {
 };
 
 const short da850_mcbsp0_pins[] __initdata = {
-	DA850_MCBSP0_CLKR, DA850_MCBSP0_CLKX, DA850_MCBSP0_FSR,
-	DA850_MCBSP0_FSX, DA850_MCBSP0_DR, DA850_MCBSP0_DX, DA850_MCBSP0_CLKS,
+	/*DA850_MCBSP0_CLKR, DA850_MCBSP0_CLKX, DA850_MCBSP0_FSR,
+	DA850_MCBSP0_FSX, DA850_MCBSP0_DR, DA850_MCBSP0_DX, DA850_MCBSP0_CLKS,*/
 	-1
 };
 
@@ -1048,6 +1049,13 @@ static struct davinci_id da850_ids[] = {
 		.cpu_id		= DAVINCI_CPU_ID_DA850,
 		.name		= "da850/omap-l138",
 	},
+	{
+              .variant    = 0x1,
+              .part_no  = 0xb7d1,
+              .manufacturer = 0x017, /* 0x02f >> 1 */
+              .cpu_id           = DAVINCI_CPU_ID_DA850,
+              .name            = "da850/omap-l138/am18xx",
+       },
 };
 
 static struct davinci_timer_instance da850_timer_instance[4] = {
