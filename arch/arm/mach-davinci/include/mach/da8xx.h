@@ -173,6 +173,7 @@ extern struct da8xx_lcdc_platform_data sharp_lcd035q3dg01_pdata;
 extern struct da8xx_lcdc_platform_data sharp_lk043t1dg01_pdata;
 void da8xx_usb20_configure(struct musb_hdrc_platform_data *pdata, u8 num_inst);
 
+
 extern const short da830_emif25_pins[];
 extern const short da830_spi0_pins[];
 extern const short da830_spi1_pins[];
@@ -199,6 +200,7 @@ extern const short da830_ecap2_pins[];
 extern const short da830_eqep0_pins[];
 extern const short da830_eqep1_pins[];
 
+extern const short da850_pru_suart_485_dir_pins[];
 extern const short da850_uart0_pins[];
 extern const short da850_uart1_pins[];
 extern const short da850_uart2_pins[];
