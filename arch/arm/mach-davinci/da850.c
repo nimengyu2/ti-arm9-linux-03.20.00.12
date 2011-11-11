@@ -15,6 +15,7 @@
 #include <linux/clk.h>
 #include <linux/platform_device.h>
 #include <linux/cpufreq.h>
+#include <linux/delay.h>
 #include <linux/regulator/consumer.h>
 #include <linux/platform_device.h>
 
@@ -237,6 +238,13 @@ static struct clk tptc2_clk = {
 	.flags		= ALWAYS_ENABLED,
 };
 
+static struct clk pru_clk = {
+	.name		= "pru_ck",
+	.parent		= &pll0_sysclk2,
+	.lpsc		= DA8XX_LPSC0_DMAX,
+	.flags      = ALWAYS_ENABLED,
+};
+
 static struct clk uart0_clk = {
 	.name		= "uart0",
 	.parent		= &pll0_sysclk2,
@@ -317,6 +325,20 @@ static struct clk mcasp_clk = {
 	.flags		= DA850_CLK_ASYNC3,
 };
 
+static struct clk mcasp_pru_clk = {
+	.name		= "mcasp_pru",
+	.parent		= &pll0_sysclk2,
+	.lpsc		= DA8XX_LPSC1_McASP0,
+	.gpsc		= 1,
+	.flags		= DA850_CLK_ASYNC3,
+};
+
+static struct clk timerp64_2_pru_clk = {
+        .name           = "timer2_pru",
+        .parent         = &pll0_sysclk2,
+        .flags          = DA850_CLK_ASYNC3,
+};
+
 static struct clk lcdc_clk = {
 	.name		= "lcdc",
 	.parent		= &pll0_sysclk2,
@@ -392,6 +414,15 @@ static struct clk sata_clk = {
 	.lpsc		= DA850_LPSC1_SATA,
 	.gpsc		= 1,
 };
+
+static struct clk ecap_clk = {
+    .name       = "ecap",
+    .parent     = &pll0_sysclk2,
+    .lpsc       = DA8XX_LPSC1_ECAP,
+    .gpsc       = 1,
+    .flags          = DA850_CLK_ASYNC3,
+};
+
 static struct clk_lookup da850_clks[] = {
 	CLK(NULL,		"ref",		&ref_clk),
 	CLK(NULL,		"pll0",		&pll0_clk),
@@ -420,6 +451,7 @@ static struct clk_lookup da850_clks[] = {
 	CLK(NULL,		"tpcc1",	&tpcc1_clk),
 	CLK(NULL,		"tptc2",	&tptc2_clk),
 	CLK(NULL,		"uart0",	&uart0_clk),
+	CLK(NULL,		"pru_ck",	&pru_clk),
 	CLK(NULL,		"uart1",	&uart1_clk),
 	CLK(NULL,		"uart2",	&uart2_clk),
 	CLK(NULL,		"aintc",	&aintc_clk),
@@ -429,7 +461,9 @@ static struct clk_lookup da850_clks[] = {
 	CLK(NULL,		"arm",		&arm_clk),
 	CLK(NULL,		"rmii",		&rmii_clk),
 	CLK("davinci_emac.1",	NULL,		&emac_clk),
+	CLK(NULL,	"mcasp_pru",	&mcasp_pru_clk),
 	CLK("davinci-mcasp.0",	NULL,		&mcasp_clk),
+	CLK(NULL,               "timer2_pru",   &timerp64_2_pru_clk),
 	CLK("da8xx_lcdc.0",	NULL,		&lcdc_clk),
 	CLK("davinci_mmc.0",	NULL,		&mmcsd_clk),
 	CLK(NULL,		"aemif",	&aemif_clk),
@@ -438,6 +472,7 @@ static struct clk_lookup da850_clks[] = {
 	CLK("davinci-mcbsp.0",	NULL,		&mcbsp0_clk),
 	CLK("davinci-mcbsp.1",	NULL,		&mcbsp1_clk),
 	CLK(NULL, 		"vpif",		&vpif_clk),
+	CLK(NULL, 		"ecap", 	&ecap_clk),
 	CLK(NULL,		"usb11",	&usb11_clk),
 	CLK(NULL,		"usb20",	&usb20_clk),
 	CLK(NULL,		"ahci",		&sata_clk),
@@ -447,9 +482,13 @@ static struct clk_lookup da850_clks[] = {
 
 /*
  * Device specific mux setup
- *
- *		soc	description	mux	mode	mode	mux	dbg
- *					reg	offset	mask	mode
+ *	soc			-> DA850
+ *	desc		-> Pin name, which evaluates to soc##_##desc.
+ *	muxreg		-> Pin Multiplexing Control n (PINMUXn) Register number.
+ *	mode_offset	-> Bit offset in the register PINMUXn.
+ *	mode_mask	-> Number of bits for Pin Multiplexing Control n.
+ *	mux_mode	-> Multiplexing mode to set.
+ *	dbg			-> debug on/off.
  */
 static const struct mux_config da850_pins[] = {
 #ifdef CONFIG_DAVINCI_MUX
@@ -570,7 +609,7 @@ static const struct mux_config da850_pins[] = {
 	MUX_CFG(DA850, EMA_A_5,		12,	8,	15,	1,	false)
 	MUX_CFG(DA850, EMA_A_6,		12,	4,	15,	1,	false)
 	MUX_CFG(DA850, EMA_A_7,		12,	0,	15,	1,	false)
-	MUX_CFG(DA850, EMA_A_8,		11,	28,	15,	1,	false)
+	MUX_CFG(DA850, EMA_A_8,		11,	28,	15,	8,	false)
 	MUX_CFG(DA850, EMA_A_9,		11,	24,	15,	1,	false)
 	MUX_CFG(DA850, EMA_A_10,	11,	20,	15,	1,	false)
 	MUX_CFG(DA850, EMA_A_11,	11,	16,	15,	1,	false)
@@ -598,12 +637,17 @@ static const struct mux_config da850_pins[] = {
 	MUX_CFG(DA850, EMA_CLK,		6,	0,	15,	1,	false)
 	MUX_CFG(DA850, EMA_WAIT_1,	6,	24,	15,	1,	false)
 	MUX_CFG(DA850, NEMA_CS_2,	7,	0,	15,	1,	false)
+    /* PRU functions for soft can */
+    MUX_CFG(DA850, PRU0_R31_0,  7,  28, 15, 0,  false)
+    MUX_CFG(DA850, PRU1_R30_15, 12, 0,  15, 4,  false)
+    MUX_CFG(DA850, PRU1_R31_18, 11, 20,  15, 0,  false)
 	/* SPI1 function */
 	MUX_CFG(DA850, SPI1_CS_0,	5,	4,	15,	1,	false)
 	MUX_CFG(DA850, SPI1_CLK,	5,	8,	15,	1,	false)
 	MUX_CFG(DA850, SPI1_SOMI,	5,	16,	15,	1,	false)
 	MUX_CFG(DA850, SPI1_SIMO,	5,	20,	15,	1,	false)
 	/* GPIO function */
+	MUX_CFG(DA850, GPIO2_0,     6,  28, 15, 8,  false)
 	MUX_CFG(DA850, GPIO2_6,		6,	4,	15,	8,	false)
 	MUX_CFG(DA850, GPIO2_8,		5,	28,	15,	8,	false)
 	MUX_CFG(DA850, GPIO2_15,	5,	0,	15,	8,	false)
@@ -672,11 +716,40 @@ static const struct mux_config da850_pins[] = {
 	MUX_CFG(DA850, VPIF_DOUT15,	17,	8,	15,	1,	false)
 	MUX_CFG(DA850, VPIF_CLKO2,	19,	12,	15,	1,	false)
 	MUX_CFG(DA850, VPIF_CLKO3,	19,	20,	15,	1,	false)
+    /* Soft-UART flow control */
+    MUX_CFG(DA850, PRU0_R31_20,  0,  12, 15, 0,  false)
+    MUX_CFG(DA850, PRU0_R30_20,  0,  0, 15, 4,  false)
+    /* Soft-UART DIR */
+    MUX_CFG(DA850, PRU0_R30_16,  0,  24, 15, 2,  false)
+    /* eCAP0 function */
+    MUX_CFG(DA850, ECAP0_APWM0, 2,  28, 15, 2,  false)
+    /* eCAP1 function */
+    MUX_CFG(DA850, ECAP1_APWM1, 1,  28, 15, 4,  false)
+    /* eCAP2 function */
+    MUX_CFG(DA850, ECAP2_APWM2, 1,  0,  15, 4,  false)
+
 #endif
 };
 
 const short da850_uart0_pins[] __initdata = {
 	DA850_NUART0_CTS, DA850_NUART0_RTS, DA850_UART0_RXD, DA850_UART0_TXD,
+	-1
+};
+
+const short da850_pru_can_pins[] __initdata = {
+	DA850_GPIO2_0, DA850_PRU0_R31_0, DA850_PRU1_R30_15,
+	DA850_PRU1_R31_18,
+	-1
+};
+
+const short da850_pru_suart_pins[] __initdata = {
+	DA850_AHCLKX, DA850_ACLKX, DA850_AFSX,
+	//    DA850_AHCLKR, DA850_ACLKR, DA850_AFSR,
+	DA850_AHCLKR, DA850_PRU0_R30_20, DA850_PRU0_R31_20,
+    DA850_AXR_13, DA850_AXR_9, DA850_AXR_7,
+	DA850_AXR_14, DA850_AXR_10, DA850_AXR_8,
+    DA850_AXR_11, DA850_AXR_12,
+	DA850_UART1_RXD, DA850_UART1_TXD, DA850_PRU0_R30_16
 	-1
 };
 
@@ -758,7 +831,7 @@ const short da850_nor_pins[] __initdata = {
 	DA850_EMA_D_14, DA850_EMA_D_15, DA850_EMA_A_0, DA850_EMA_A_1,
 	DA850_EMA_A_2, DA850_EMA_A_3, DA850_EMA_A_4, DA850_EMA_A_5,
 	DA850_EMA_A_6, DA850_EMA_A_7, DA850_EMA_A_8, DA850_EMA_A_9,
-	DA850_EMA_A_10, DA850_EMA_A_11, DA850_EMA_A_12, DA850_EMA_A_13,
+	/*DA850_EMA_A_10,*/ DA850_EMA_A_11, DA850_EMA_A_12, DA850_EMA_A_13,
 	DA850_EMA_A_14, DA850_EMA_A_15, DA850_EMA_A_16, DA850_EMA_A_17,
 	DA850_EMA_A_18, DA850_EMA_A_19, DA850_EMA_A_20, DA850_EMA_A_21,
 	DA850_EMA_A_22, DA850_EMA_A_23,
@@ -1259,6 +1332,69 @@ static int da850_round_armrate(struct clk *clk, unsigned long rate)
 	return clk->rate;
 }
 #endif
+
+#define DA8XX_ECAP0_BASE        0x01F06000
+
+static struct resource da850_ecap0_resource[] = {
+	{
+	.start		= DA8XX_ECAP0_BASE,
+	.end		= DA8XX_ECAP0_BASE + 0xfff,
+	.flags		= IORESOURCE_MEM,
+	},
+};
+
+static struct platform_device da850_ecap0_dev = {
+	.name		= "ecap",
+	.id		= 0,
+	.resource       = da850_ecap0_resource,
+	.num_resources  = ARRAY_SIZE(da850_ecap0_resource),
+};
+
+#define DA8XX_ECAP1_BASE        0x01F07000
+
+static struct resource da850_ecap1_resource[] = {
+	{
+	.start		= DA8XX_ECAP1_BASE,
+	.end		= DA8XX_ECAP1_BASE + 0xfff,
+	.flags		= IORESOURCE_MEM,
+	},
+};
+
+static struct platform_device da850_ecap1_dev = {
+	.name		= "ecap",
+	.id		= 1,
+	.resource	= da850_ecap1_resource,
+	.num_resources	= ARRAY_SIZE(da850_ecap1_resource),
+};
+
+#define DA8XX_ECAP2_BASE        0x01F08000
+
+static struct resource da850_ecap2_resource[] = {
+	{
+	.start		= DA8XX_ECAP2_BASE,
+	.end		= DA8XX_ECAP2_BASE + 0xfff,
+	.flags		= IORESOURCE_MEM,
+	},
+};
+
+static struct platform_device da850_ecap2_dev = {
+	.name		= "ecap",
+	.id		= 2,
+	.resource	= da850_ecap2_resource,
+	.num_resources	= ARRAY_SIZE(da850_ecap2_resource),
+};
+
+int __init da850_register_ecap(char instance)
+{
+	if (instance == 0)
+		return platform_device_register(&da850_ecap0_dev);
+	else if (instance == 1)
+		return platform_device_register(&da850_ecap1_dev);
+	else if (instance == 2)
+		return platform_device_register(&da850_ecap2_dev);
+	else
+		return -EINVAL;
+}
 
 int da850_register_pm(struct platform_device *pdev)
 {

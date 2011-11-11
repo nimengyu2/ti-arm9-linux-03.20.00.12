@@ -22,6 +22,7 @@
  **************************************************************************/
 #define DAVINCI_DDR_BASE	0x80000000
 #define DA8XX_DDR_BASE		0xc0000000
+#define DA8XX_SHARED_RAM_BASE 0x80000000
 
 #if defined(CONFIG_ARCH_DAVINCI_DA8XX) && defined(CONFIG_ARCH_DAVINCI_DMx)
 #error Cannot enable DaVinci and DA8XX platforms concurrently
