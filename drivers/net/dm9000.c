@@ -1576,6 +1576,48 @@ dm9000_probe(struct platform_device *pdev)
 			ndev->dev_addr[i] = ior(db, i+DM9000_PAR);
 	}
 
+	// nmy modify start                                               
+	#if 1                                                             
+	printk("dm9000 write mac addr now\n");                            
+	iow(db,0+DM9000_PAR,0x00);                                        
+	iow(db,1+DM9000_PAR,0x50);                                        
+	iow(db,2+DM9000_PAR,0xC2);                                        
+	iow(db,3+DM9000_PAR,0xD8);                                        
+	iow(db,4+DM9000_PAR,0xEF);                                        
+	iow(db,5+DM9000_PAR,0xEB);                                        
+	printk("dm9000 read mac addr now\n");                             
+	unsigned char u8_tmp[6];                                          
+	u8_tmp[0] =  ior(db, 0+DM9000_PAR);                               
+	u8_tmp[1] =  ior(db, 1+DM9000_PAR);                               
+	u8_tmp[2] =  ior(db, 2+DM9000_PAR);                               
+	u8_tmp[3] =  ior(db, 3+DM9000_PAR);                               
+	u8_tmp[4] =  ior(db, 4+DM9000_PAR);                               
+	u8_tmp[5] =  ior(db, 5+DM9000_PAR);                               
+	printk("dm9000 read mac is %02x: %02x: %02x: %02x: %02x: %02x\n", 
+		u8_tmp[0],u8_tmp[1],u8_tmp[2],u8_tmp[3],u8_tmp[4],u8_tmp[5]);   
+		                                                              
+	unsigned long read_tmp;                                           
+	read_tmp = ior(db,DM9000_NSR);	                                  
+	printk("dm9000 net status register is speed=%d linkst=%d \n",     
+		(int)((read_tmp >> 7)&0x01),                                    
+		(int)((read_tmp >> 6)&0x01)                                     
+		);	                                                            
+		                                                              
+	read_tmp = ior(db,DM9000_CHIPR);	                                
+	printk("dm9000 chip version is 0x%02x\n",(unsigned int)read_tmp );
+		                                                              
+	writeb(DM9000_VIDL, db->io_addr);                                 
+	read_tmp =  readb(db->io_data);                                   
+	printk("dm9000 vid is 0x%04x\n",(unsigned int)read_tmp );	        
+		                                                              
+	writew(DM9000_VIDL, db->io_addr);                                 
+	read_tmp =  readw(db->io_data);                                   
+	printk("dm9000 vid is 0x%04x\n",(unsigned int)read_tmp );	        
+		                                                              
+	#endif                                                            
+	// nmy modify end                                                 
+
+
 	if (!is_valid_ether_addr(ndev->dev_addr))
 		dev_warn(db->dev, "%s: Invalid ethernet MAC address. Please "
 			 "set using ifconfig\n", ndev->name);

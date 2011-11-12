@@ -455,7 +455,10 @@ static const struct mux_config da850_pins[] = {
 #ifdef CONFIG_DAVINCI_MUX
 	/* UART0 function */
 	MUX_CFG(DA850, NUART0_CTS,	3,	24,	15,	2,	false)
-	MUX_CFG(DA850, NUART0_RTS,	3,	28,	15,	2,	false)
+	// nmy modify start at 20111027 11:41             
+	// 设定GPIO8[1]为IO口                                 
+	MUX_CFG(DA850, NUART0_RTS,	3,	28,	15,	4,	false)
+	// nmy modify end at 20111027 11:41               
 	MUX_CFG(DA850, UART0_RXD,	3,	16,	15,	2,	false)
 	MUX_CFG(DA850, UART0_TXD,	3,	20,	15,	2,	false)
 	/* UART1 function */
@@ -760,7 +763,10 @@ const short da850_nand_pins[] __initdata = {
 	DA850_EMA_D_7, DA850_EMA_D_6, DA850_EMA_D_5, DA850_EMA_D_4,
 	DA850_EMA_D_3, DA850_EMA_D_2, DA850_EMA_D_1, DA850_EMA_D_0,
 	DA850_EMA_A_1, DA850_EMA_A_2, DA850_NEMA_CS_3, DA850_NEMA_CS_4,
-	DA850_NEMA_WE, DA850_NEMA_OE,
+	DA850_EMA_D_8, DA850_EMA_D_9,                                        
+	DA850_EMA_D_10, DA850_EMA_D_11, DA850_EMA_D_12, DA850_EMA_D_13,      
+	DA850_EMA_D_14, DA850_EMA_D_15,                                      
+	DA850_NEMA_WE, DA850_NEMA_OE, DA850_NEMA_CS_2,                       
 	-1
 };
 

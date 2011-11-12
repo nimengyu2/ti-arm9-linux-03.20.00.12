@@ -18,7 +18,9 @@
 #include <linux/i2c/at24.h>
 #include <linux/i2c/pca953x.h>
 #include <linux/mfd/tps6507x.h>
+#include <linux/clk.h>
 #include <linux/i2c/tsc2007.h> // Modify by toby.zhang @2010.12.25 
+#include <linux/dm9000.h>
 #include <linux/gpio.h>
 #include <linux/delay.h>
 #include <linux/platform_device.h>
@@ -215,14 +217,75 @@ static struct platform_device da850_evm_nandflash_device = {
 	.resource	= da850_evm_nandflash_resource,
 };
 
+// nmy modify for dm9000 start
+// nmy modify start at 20111031 00:34                                          
+// use for dm9000 drivers                                                      
+static struct resource lsd_dm9000_rsrc[] = {                                   
+	[0] = {                                                                       
+		/* addr */                                                                  
+		.start	= 0x60000000,                                                       
+		.end	= 0x60000007,                                                         
+		.flags	= IORESOURCE_MEM,                                                   
+	},                                                                            
+	// 注意,我们硬件接A1 到cmd,之前以为是第二位                                                   
+	// 后来测试CMD引脚发现没有电平变化,后来发现                                                     
+	// 应该是地址不对,因此测试地址线                                                            
+	[1] = {                                                                       
+		/* data */                                                                  
+		.start	= 0x60000008,                                                       
+		.end	= 0x6000000F,                                                         
+		.flags	= IORESOURCE_MEM,                                                   
+	},                                                                            
+	[2] = {                                                                       
+		.flags	= IORESOURCE_IRQ                                                    
+			| IORESOURCE_IRQ_HIGHEDGE /* rising (active high) */,                     
+	},                                                                            
+};                                                                             
+static struct davinci_aemif_timing da850_evm_dm9000_timing = {                 
+	.wsetup		= 10,                                                               
+	.wstrobe	= 60,                                                               
+	.whold		= 10,                                                               
+	.rsetup		= 10,                                                               
+	.rstrobe	= 110,                                                              
+	.rhold		= 10,                                                               
+	.ta		= 30,                                                                   
+};                                                                             
+                                                                               
+#if 0                                                                          
+static struct davinciflash_pdata da850_evm_dm9000_data = {                     
+	.width		= 2,                                                                
+	.timing		= &da850_evm_dm9000_timing,                                         
+};                                                                             
+#endif                                                                         
+                                                                               
+static struct dm9000_plat_data da850_evm_dm9000_data  ={                       
+	.flags = DM9000_PLATF_16BITONLY,//work in 32bit mode                          
+	.dev_addr = {0x00,0x50,0xC2,0xD8,0xEF,0xEB},                                  
+};                                                                             
+                                                                               
+static struct platform_device lsd_dm9000 = {                                   
+	.name		= "dm9000",                                                           
+	.id		= -1,                                                                   
+	.dev		= {                                                                   
+		.platform_data  = &da850_evm_dm9000_data,                                   
+	},                                                                            
+	.resource	= lsd_dm9000_rsrc,                                                  
+	.num_resources	= ARRAY_SIZE(lsd_dm9000_rsrc),                                
+};                                                                             
+                                                                               
+// nmy modify end at 20111031 00:34                                            
+// nmy modify for dm9000 end
+
 static struct platform_device *da850_evm_devices[] __initdata = {
 	&da850_evm_nandflash_device,
 	&da850_evm_norflash_device,
 };
+
 // Modify by toby.zhang @2011.01.10 
 // add nand device 
 static struct platform_device *lsd_am1808_devices[] __initdata = { 
   &da850_evm_nandflash_device,   
+  &lsd_dm9000,
 }; 
  
 
@@ -1183,6 +1246,54 @@ static __init void da850_evm_init(void)
 	i2c_register_board_info(1, da850_evm_i2c_devices,
 			ARRAY_SIZE(da850_evm_i2c_devices));
 	
+	// nmy modify start at 20111027 11:41                                                             
+	ret = da8xx_pinmux_setup(da850_uart0_pins);                                                      
+	if (ret)                                                                                         
+		pr_warning("da850_evm_init: dm9000 da8xx_pinmux_setup da850_uart0_pins gpio8[1] init error"    
+				" %d\n", ret);                                                                             
+	else                                                                                             
+		pr_warning("da850_evm_init: dm9000 da8xx_pinmux_setup da850_uart0_pins gpio8[1] init ok"       
+				" %d\n", ret);                                                                             
+                                                                                                  
+    ret = gpio_request(8*16+1, "gpio_test\n");                                                    
+    if (ret)                                                                                      
+		pr_warning("da850_evm_init: dm9000 gpio_request  gpio8[1] init error"                          
+				" %d\n", ret);                                                                             
+	else                                                                                             
+		pr_warning("da850_evm_init: dm9000 gpio_request  gpio8[1] init ok"                             
+				" %d\n", ret);                                                                             
+	                                                                                                 
+	ret = gpio_direction_input(8*16+1);                                                              
+    if (ret)                                                                                      
+		pr_warning("da850_evm_init: dm9000 gpio_direction_input  gpio8[1] init error"                  
+				" %d\n", ret);                                                                             
+	else                                                                                             
+		pr_warning("da850_evm_init: dm9000 gpio_direction_input  gpio8[1] init ok"                     
+				" %d\n", ret);                                                                             
+                                                                                                  
+	lsd_dm9000_rsrc[2].start = gpio_to_irq(8*16+1);                                                  
+                                                                                                  
+	struct clk *aemif;                                                                               
+	aemif = clk_get(&lsd_dm9000.dev, "aemif");                                                       
+	if (IS_ERR(aemif))                                                                               
+	{                                                                                                
+		WARN("%s: unable to get AEMIF clock\n", __func__);                                             
+	}	                                                                                               
+	else                                                                                             
+	{                                                                                                
+		clk_enable(aemif);                                                                             
+		pr_warning("da850_evm_init: dm9000 clk_get set ok");                                           
+	}                                                                                                
+                                                                                                  
+	void __iomem *ctlr;                                                                              
+	unsigned long val;                                                                               
+	ctlr = ioremap(DA8XX_AEMIF_CTL_BASE,SZ_32K);                                                     
+	val = __raw_readl(ctlr + A1CR_OFFSET);                                                           
+	val &= ~(ACR_ASIZE_MASK | ACR_EW_MASK | ACR_SS_MASK);                                            
+	val |= 2 - 1;                                                                                    
+	__raw_writel(val, ctlr + A1CR_OFFSET);                                                           
+
+
 	if (HAS_MMC) { 
   		ret = da8xx_pinmux_setup(da850_nand_pins); 
   		pr_warning("lierda_nand_pinmux %d\n", ret); 
@@ -1202,6 +1313,7 @@ static __init void da850_evm_init(void)
 	//__raw_writel(0, IO_ADDRESS(DA8XX_UART1_BASE) + 0x30);
 	//__raw_writel(0, IO_ADDRESS(DA8XX_UART0_BASE) + 0x30);
 
+#if 0 
 	if (HAS_MCBSP0) {
 		if (HAS_EMAC)
 			pr_warning("WARNING: both MCBSP0 and EMAC are "
@@ -1278,6 +1390,7 @@ static __init void da850_evm_init(void)
 	ret = da8xx_register_rtc();
 	if (ret)
 		pr_warning("da850_evm_init: rtc setup failed: %d\n", ret);
+#endif
 
 	ret = da850_register_cpufreq();
 	if (ret)
@@ -1288,7 +1401,7 @@ static __init void da850_evm_init(void)
 	if (ret)
 		pr_warning("da850_evm_init: cpuidle registration failed: %d\n",
 				ret);
-
+#if 0
 	ret = da850_register_pm(&da850_pm_device);
 	if (ret)
 		pr_warning("da850_evm_init: suspend registration failed: %d\n",
@@ -1301,9 +1414,9 @@ static __init void da850_evm_init(void)
 
 	da850_init_spi1(BIT(0), da850_spi_board_info,
 			ARRAY_SIZE(da850_spi_board_info));
-
+#endif
 	da850_evm_usb_init();
-
+#if 0
 	ret = da8xx_register_sata();
 	if (ret)
 		pr_warning("da850_evm_init: SATA registration failed: %d\n",
@@ -1341,6 +1454,7 @@ static __init void da850_evm_init(void)
 					"%d\n",	ret);
 
 	}
+#endif 
 }
 
 #ifdef CONFIG_SERIAL_8250_CONSOLE
