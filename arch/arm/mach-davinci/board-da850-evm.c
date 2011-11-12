@@ -186,7 +186,7 @@ static struct davinci_nand_pdata da850_evm_nandflash_data = {
 	.parts		= da850_evm_nandflash_partition,
 	.nr_parts	= ARRAY_SIZE(da850_evm_nandflash_partition),
 	.ecc_mode	= NAND_ECC_HW,
-	.ecc_bits	= 4,
+	.ecc_bits	= 1,
 	.options	= NAND_USE_FLASH_BBT,
 	.timing		= &da850_evm_nandflash_timing,
 };
@@ -218,6 +218,12 @@ static struct platform_device *da850_evm_devices[] __initdata = {
 	&da850_evm_nandflash_device,
 	&da850_evm_norflash_device,
 };
+// Modify by toby.zhang @2011.01.10 
+// add nand device 
+static struct platform_device *lsd_am1808_devices[] __initdata = { 
+  &da850_evm_nandflash_device,   
+}; 
+ 
 
 static struct mtd_partition spi_flash_partitions[] = {
 	[0] = {
@@ -1103,6 +1109,17 @@ static __init void da850_evm_init(void)
 
 	i2c_register_board_info(1, da850_evm_i2c_devices,
 			ARRAY_SIZE(da850_evm_i2c_devices));
+	
+	if (HAS_MMC) { 
+  		ret = da8xx_pinmux_setup(da850_nand_pins); 
+  		pr_warning("lierda_nand_pinmux %d\n", ret); 
+  		if (ret) 
+    		pr_warning("da850_evm_init: nand mux setup failed: " 
+        		"%d\n", ret); 
+  		platform_add_devices(lsd_am1808_devices, 
+        		ARRAY_SIZE(lsd_am1808_devices)); 
+	} 
+ 
 
 	/*
 	 * shut down uart 0 and 1; they are not used on the board and
