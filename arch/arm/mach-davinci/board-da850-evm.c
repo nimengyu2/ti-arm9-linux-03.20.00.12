@@ -285,7 +285,7 @@ static struct platform_device *da850_evm_devices[] __initdata = {
 // add nand device 
 static struct platform_device *lsd_am1808_devices[] __initdata = { 
   &da850_evm_nandflash_device,   
-  &lsd_dm9000,
+  //&lsd_dm9000,
 }; 
  
 
@@ -1284,15 +1284,6 @@ static __init void da850_evm_init(void)
 		clk_enable(aemif);                                                                             
 		pr_warning("da850_evm_init: dm9000 clk_get set ok");                                           
 	}                                                                                                
-                                                                                                  
-	void __iomem *ctlr;                                                                              
-	unsigned long val;                                                                               
-	ctlr = ioremap(DA8XX_AEMIF_CTL_BASE,SZ_32K);                                                     
-	val = __raw_readl(ctlr + A1CR_OFFSET);                                                           
-	val &= ~(ACR_ASIZE_MASK | ACR_EW_MASK | ACR_SS_MASK);                                            
-	val |= 2 - 1;                                                                                    
-	__raw_writel(val, ctlr + A1CR_OFFSET);                                                           
-
 
 	if (HAS_MMC) { 
   		ret = da8xx_pinmux_setup(da850_nand_pins); 
