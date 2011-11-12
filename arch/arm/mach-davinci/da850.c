@@ -392,6 +392,31 @@ static struct clk sata_clk = {
 	.lpsc		= DA850_LPSC1_SATA,
 	.gpsc		= 1,
 };
+
+
+// nmy modify start
+struct clk pwm0_clk = {
+	.name		= "pwm0",
+	.parent		= &pll0_sysclk2,
+	.lpsc		= DA8XX_LPSC1_PWM,
+	.gpsc		= 1,
+};
+
+ struct clk pwm1_clk = {
+	.name		= "pwm1",
+	.parent		= &pll0_sysclk2,
+	.lpsc		= DA8XX_LPSC1_PWM,
+	.gpsc		= 1,
+};
+
+ struct clk pwm2_clk = {
+	.name		= "pwm2",
+	.parent		= &pll0_sysclk2,
+	.lpsc		= DA8XX_LPSC1_PWM,
+	.gpsc		= 1,
+};
+// nmy modify end
+
 static struct clk_lookup da850_clks[] = {
 	CLK(NULL,		"ref",		&ref_clk),
 	CLK(NULL,		"pll0",		&pll0_clk),
@@ -441,6 +466,11 @@ static struct clk_lookup da850_clks[] = {
 	CLK(NULL,		"usb11",	&usb11_clk),
 	CLK(NULL,		"usb20",	&usb20_clk),
 	CLK(NULL,		"ahci",		&sata_clk),
+	// nmy modify start 
+	CLK(NULL,		"pwm0",		&pwm0_clk),
+	CLK(NULL,		"pwm1",		&pwm1_clk),
+	CLK(NULL,		"pwm2",		&pwm2_clk),
+	// nmy modify end
 
 	CLK(NULL,		NULL,		NULL),
 };
@@ -673,19 +703,20 @@ static const struct mux_config da850_pins[] = {
 	MUX_CFG(DA850, VPIF_CLKO2,	19,	12,	15,	1,	false)
 	MUX_CFG(DA850, VPIF_CLKO3,	19,	20,	15,	1,	false)
 	
-		// nmy modify start at 20111027 14:23
+    // nmy modify start at 20111027 14:23
 	// modify for add led button
-	 /* LED GPIO function */
-    	MUX_CFG(DA850, GPIO6_10,    13, 20, 15, 8,  false)
-    	MUX_CFG(DA850, GPIO6_8,     13, 28, 15, 8,  false)
-    	MUX_CFG(DA850, GPIO6_9,     13, 24, 15, 8,  false)
-   	 MUX_CFG(DA850, GPIO6_11,    13, 16, 15, 8,  false)
-
-        /* KEY GPIO function */
-    	MUX_CFG(DA850, GPIO8_15,    18,  8, 15, 8,  false)
+	/* LED GPIO function */
+    MUX_CFG(DA850, GPIO6_10,    13, 20, 15, 8,  false)
+    MUX_CFG(DA850, GPIO6_8,     13, 28, 15, 8,  false)
+    MUX_CFG(DA850, GPIO6_9,     13, 24, 15, 8,  false)
+   	MUX_CFG(DA850, GPIO6_11,    13, 16, 15, 8,  false)
+    /* KEY GPIO function */
+   	MUX_CFG(DA850, GPIO8_15,    18,  8, 15, 8,  false)
    	MUX_CFG(DA850, GPIO8_14,    18, 12, 15, 8,  false)
    	MUX_CFG(DA850, GPIO8_13,    18, 16, 15, 8,  false)
-    	MUX_CFG(DA850, GPIO8_12,    18, 20, 15, 8,  false)
+   	MUX_CFG(DA850, GPIO8_12,    18, 20, 15, 8,  false)
+	// EPWM0B
+	MUX_CFG(DA850,EPWM0B,		3,	4,	15,	2,	false)
 	// nmy modify end at 20111027 14:23
 #endif
 };

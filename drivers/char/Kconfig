@@ -57,6 +57,10 @@ config LSDDM_AMR1808_B4_TEST_BUS
 	 tristate "test bus driver for LSDDM-AMR1808-B4 boards" 
     help 
           this is test bus driver for LSDDM-AMR1808-B4 boards
+config LSDDM_AMR1808_B4_PWM
+	 tristate "pwm driver for LSDDM-AMR1808-B4 boards" 
+    help 
+          this is pwm driver for LSDDM-AMR1808-B4 boards
 config LSD_TESTAM808_01B_V1_160160_LCD
 	 tristate "test bus driver for LSD_TESTAM808_01B_V1 boards" 
     help 

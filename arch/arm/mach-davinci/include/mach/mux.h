@@ -980,11 +980,12 @@ enum davinci_da850_index {
 	DA850_GPIO6_9,  
 	DA850_GPIO6_11,
 
-	 /* KEY GPIO function */
-	 DA850_GPIO8_15,
-	 DA850_GPIO8_14,
-	 DA850_GPIO8_13,
-	 DA850_GPIO8_12,
+	/* KEY GPIO function */
+	DA850_GPIO8_15,
+	DA850_GPIO8_14,
+	DA850_GPIO8_13,
+	DA850_GPIO8_12,
+	DA850_EPWM0B,
 	// nmy modify end at 20111027 14:21
 };
 

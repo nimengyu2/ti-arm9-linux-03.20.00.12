@@ -61,7 +61,7 @@ void fn_test_bus_init(void)
 	printk("test bus init ok\n");
 }
 
-void fn_pwm_exit(void)
+void fn_test_bus_exit(void)
 {
 	printk("test bus exit ok\n");
 }
