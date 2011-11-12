@@ -18,6 +18,7 @@
 #include <linux/i2c/at24.h>
 #include <linux/i2c/pca953x.h>
 #include <linux/mfd/tps6507x.h>
+#include <linux/i2c/tsc2007.h> // Modify by toby.zhang @2010.12.25 
 #include <linux/gpio.h>
 #include <linux/delay.h>
 #include <linux/platform_device.h>
@@ -372,9 +373,9 @@ static int da850_evm_ui_expander_setup(struct i2c_client *client, unsigned gpio,
 
 	da850_evm_setup_emac_rmii(sel_a);
 
-	da850_evm_setup_char_lcd(sel_a, sel_b, sel_c);
+	//da850_evm_setup_char_lcd(sel_a, sel_b, sel_c);
 
-	da850_evm_setup_video_port(sel_c);
+	//da850_evm_setup_video_port(sel_c);
 
 	return 0;
 
@@ -547,14 +548,76 @@ static struct tps6507x_board tps_board = {
 	.tps6507x_pmic_init_data = &tps65070_regulator_data[0],
 };
 
+//----------------------------------------------------------------------------// 
+//    nmy add tsc2007 code      start    2010-12-10    14:00 
+//----------------------------------------------------------------------------// 
+ 
+/* 
+  * TSC 2007 Support 
+  */ 
+#define TSC2007_GPIO_IRQ_PIN  GPIO_TO_PIN(2, 6) 
+ 
+static int tsc2007_init_irq(void) 
+{ 
+  int ret = 0; 
+                //pr_warning("%s: lierda_tcs2007_init_irq %d\n", __func__, ret); 
+ 
+  ret = gpio_request(TSC2007_GPIO_IRQ_PIN, "tsc2007-irq"); 
+  if (ret < 0) { 
+    pr_warning("%s: failed to TSC2007 IRQ GPIO: %d\n", 
+                __func__, ret); 
+    return ret; 
+  } 
+ 
+  ret = davinci_cfg_reg(DA850_GPIO2_6); 
+  if (ret) { 
+    pr_warning("%s: PinMux setup for GPIO %d failed: %d\n", 
+          __func__, TSC2007_GPIO_IRQ_PIN, ret); 
+    return ret; 
+  } 
+ 
+  gpio_direction_input(TSC2007_GPIO_IRQ_PIN); 
+ 
+  return ret; 
+} 
+ 
+static void tsc2007_exit_irq(void) 
+{ 
+  gpio_free(TSC2007_GPIO_IRQ_PIN); 
+} 
+ 
+static int tsc2007_get_irq_level(void) 
+{ 
+  //pr_warning("%s: lierda_tsc2007_get_irq_level %d\n", __func__, 0); 
+  return gpio_get_value(TSC2007_GPIO_IRQ_PIN) ? 0 : 1; 
+} 
+ 
+struct tsc2007_platform_data da850evm_tsc2007data = { 
+  .model = 2007, 
+  .x_plate_ohms = 180, 
+  .get_pendown_state = tsc2007_get_irq_level, 
+  .init_platform_hw = tsc2007_init_irq, 
+  .exit_platform_hw = tsc2007_exit_irq, 
+}; 
+ 
+//----------------------------------------------------------------------------// 
+//    nmy add tsc2007 code      end    2010-12-10    14:00 
+//----------------------------------------------------------------------------// 
+
 static struct i2c_board_info __initdata da850_evm_i2c_devices[] = {
 	{
-		I2C_BOARD_INFO("tps6507x", 0x48),
-		.platform_data = &tps_board,
+	   I2C_BOARD_INFO("tsc2007", 0x48), 
+  	   .platform_data = &da850evm_tsc2007data, 
 	},
 	{
 		I2C_BOARD_INFO("tlv320aic3x", 0x18),
 	},
+/* 	
+	{
+		I2C_BOARD_INFO("tps6507x", 0x48),
+		.platform_data = &tps_board,
+	},
+
 	{
 		I2C_BOARD_INFO("tca6416", 0x20),
 		.platform_data = &da850_evm_ui_expander_info,
@@ -562,6 +625,7 @@ static struct i2c_board_info __initdata da850_evm_i2c_devices[] = {
 	{
 		I2C_BOARD_INFO("cdce913", 0x65),
 	},
+*/
 };
 
 static struct davinci_uart_config da850_evm_uart_config __initdata = {
@@ -1106,6 +1170,15 @@ static __init void da850_evm_init(void)
 	}
 
 	davinci_serial_init(&da850_evm_uart_config);
+	//----------------------------------------------------------------------------// 
+	// nmy    修改关于tsc2007  触摸屏芯片的使用      start      2010-12-10    14:00 
+	//----------------------------------------------------------------------------// 
+	//pr_warning("%s: lierda_interrupt tsc2007 init %d\n", __func__, ret); 
+    da850_evm_i2c_devices[0].irq = gpio_to_irq(TSC2007_GPIO_IRQ_PIN), 
+	//i2c_register_board_info(1, &da850_evm_i2c_devices[0], 1); 
+	//----------------------------------------------------------------------------// 
+	// nmy    修改关于tsc2007  触摸屏芯片的使用   end      2010-12-10    14:00 
+	//----------------------------------------------------------------------------// 
 
 	i2c_register_board_info(1, da850_evm_i2c_devices,
 			ARRAY_SIZE(da850_evm_i2c_devices));
@@ -1187,12 +1260,20 @@ static __init void da850_evm_init(void)
 	if (ret)
 		pr_warning("da850_evm_init: lcd initialization failed: %d\n",
 				ret);
-
+#if 0
 	sharp_lk043t1dg01_pdata.panel_power_ctrl = da850_panel_power_ctrl,
 	ret = da8xx_register_lcdc(&sharp_lk043t1dg01_pdata);
 	if (ret)
 		pr_warning("da850_evm_init: lcdc registration failed: %d\n",
 				ret);
+#endif
+	// modify by toby.zhang @2010.12.05 
+	// change sharp_lk043t1dg01_pdata to topway_lmt070dicfwd_pdata 
+	topway_lmt070dicfwd_pdata.panel_power_ctrl = da850_panel_power_ctrl, 
+	ret = da8xx_register_lcdc(&topway_lmt070dicfwd_pdata); 
+	if (ret) 
+    	pr_warning("da850_evm_init: lcdc registration failed: %d\n", 
+        ret); 
 
 	ret = da8xx_register_rtc();
 	if (ret)

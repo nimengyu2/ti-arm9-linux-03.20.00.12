@@ -196,6 +196,21 @@ static struct da8xx_panel known_lcd_panels[] = {
 		.pxl_clk = 7833600,
 		.invert_pxl_clk = 0,
 	},
+	/* Topway LMT070DICFWD */ 
+	// add by toby.zhang @2010.12.05 
+	[2] = { 
+  	.name = "Topway_LMT070DICFWD", 
+  	.width = 800, 
+  	.height = 480, 
+  	.hfp = 210, // Min: 16 Normal: 210 Max: 354 
+  	.hbp = 6, // (Min: 46 Normal: 46 Max: 46) - 40 
+  	.hsw = 40, // Min: 1 Normal: - Max: 40 
+  	.vfp = 22, // Min: 7 Normal: 22 Max: 147 
+  	.vbp = 3, // (Min: 23 Normal: 23 Max: 23) - 20 
+  	.vsw = 20, // Min: 1 Normal: - Max: 20 
+    .pxl_clk = 23040000, // 800*480*60Hz 
+    .invert_pxl_clk = 0, // may not to invert clks 
+  	}, 
 };
 
 /* Enable the Raster Engine of the LCD Controller */

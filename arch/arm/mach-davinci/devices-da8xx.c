@@ -559,6 +559,12 @@ struct da8xx_lcdc_platform_data sharp_lk043t1dg01_pdata = {
 	.controller_data	= &lcd_cfg,
 	.type			= "Sharp_LK043T1DG01",
 };
+// add by toby.zhang @2010.12.05 
+struct da8xx_lcdc_platform_data topway_lmt070dicfwd_pdata = { 
+  .manu_name    = "topway", 
+  .controller_data  = &lcd_cfg, 
+  .type     = "Topway_LMT070DICFWD", 
+}; 
 
 #if !defined(CONFIG_FB_DA8XX) && !defined(CONFIG_FB_DA8XX_MODULE)
 static struct da8xx_clcd_platform_data da8xx_evm_clcd_pdata = {
