@@ -1048,6 +1048,21 @@ static __init void da850_evm_init(void)
 		pr_warning("da850_evm_init: edma registration failed: %d\n",
 				ret);
 
+	//----------------------------------------------------------------------------//
+	// nmy    修改关于uart0 1 的使用方法  start   2011-02-11  14:00
+	//----------------------------------------------------------------------------//
+	// 在此之前，uart0 能接收数据，不能发送数据，uart1 一旦打开就会提示 太多中断
+	// 增加这一句之后，uart0可以正常收发数据，uart1还是不行
+    ret = da8xx_pinmux_setup(da850_uart0_pins);
+	if (ret)
+		pr_warning("da850_evm_init: uart0 mux setup failed: %d\n",ret);
+    ret = da8xx_pinmux_setup(da850_uart1_pins);
+	if (ret)
+		pr_warning("da850_evm_init: uart1 mux setup failed: %d\n",ret);
+	//----------------------------------------------------------------------------//
+	// nmy    修改关于uart0 1 的使用方法  start   2011-02-11  14:00
+	//----------------------------------------------------------------------------//
+
 	ret = da8xx_pinmux_setup(da850_i2c0_pins);
 	if (ret)
 		pr_warning("da850_evm_init: i2c0 mux setup failed: %d\n",
@@ -1094,8 +1109,8 @@ static __init void da850_evm_init(void)
 	 * accessing them causes endless "too much work in irq53" messages
 	 * with arago fs
 	 */
-	__raw_writel(0, IO_ADDRESS(DA8XX_UART1_BASE) + 0x30);
-	__raw_writel(0, IO_ADDRESS(DA8XX_UART0_BASE) + 0x30);
+	//__raw_writel(0, IO_ADDRESS(DA8XX_UART1_BASE) + 0x30);
+	//__raw_writel(0, IO_ADDRESS(DA8XX_UART0_BASE) + 0x30);
 
 	if (HAS_MCBSP0) {
 		if (HAS_EMAC)
