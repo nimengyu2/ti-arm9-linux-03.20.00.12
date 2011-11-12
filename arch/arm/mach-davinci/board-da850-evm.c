@@ -1289,6 +1289,7 @@ static __init void da850_evm_init(void)
 		pr_warning("da850_evm_init: cpuidle registration failed: %d\n",
 				ret);
 
+#if 0
 	ret = da850_register_pm(&da850_pm_device);
 	if (ret)
 		pr_warning("da850_evm_init: suspend registration failed: %d\n",
@@ -1301,9 +1302,9 @@ static __init void da850_evm_init(void)
 
 	da850_init_spi1(BIT(0), da850_spi_board_info,
 			ARRAY_SIZE(da850_spi_board_info));
-
+#endif 
 	da850_evm_usb_init();
-
+#if 0
 	ret = da8xx_register_sata();
 	if (ret)
 		pr_warning("da850_evm_init: SATA registration failed: %d\n",
@@ -1341,6 +1342,7 @@ static __init void da850_evm_init(void)
 					"%d\n",	ret);
 
 	}
+#endif
 }
 
 #ifdef CONFIG_SERIAL_8250_CONSOLE
