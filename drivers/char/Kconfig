@@ -44,6 +44,26 @@ config CONSOLE_TRANSLATIONS
 	  This enables support for font mapping and Unicode translation
 	  on virtual consoles.
 
+# nmy modify start at 20111027 14:26
+config LSDDM_AMR1808_B4_LEDS
+        tristate "LEDs driver for LSDDM-AMR1808-B4 boards" 
+        help 
+          this is LEDs driver for LSDDM-AMR1808-B4 boards
+config LSDDM_AMR1808_B4_BUTTONS
+        tristate "BUTTONs driver for LSDDM-AMR1808-B4 boards" 
+    help 
+          this is BUTTONs driver for LSDDM-AMR1808-B4 boards
+config LSDDM_AMR1808_B4_TEST_BUS
+	 tristate "test bus driver for LSDDM-AMR1808-B4 boards" 
+    help 
+          this is test bus driver for LSDDM-AMR1808-B4 boards
+config LSD_TESTAM808_01B_V1_160160_LCD
+	 tristate "test bus driver for LSD_TESTAM808_01B_V1 boards" 
+    help 
+          this is test bus driver for LSD_TESTAM808_01B_V1 boards
+# nmy modify end at 20111027 14:26
+
+
 config VT_CONSOLE
 	bool "Support for console on virtual terminal" if EMBEDDED
 	depends on VT

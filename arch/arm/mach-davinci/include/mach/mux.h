@@ -972,6 +972,20 @@ enum davinci_da850_index {
 	DA850_VPIF_DOUT15,
 	DA850_VPIF_CLKO2,
 	DA850_VPIF_CLKO3,
+
+	// nmy modify start at 20111027 14:21
+	/* LED GPIO function */
+	DA850_GPIO6_10,
+	DA850_GPIO6_8, 
+	DA850_GPIO6_9,  
+	DA850_GPIO6_11,
+
+	 /* KEY GPIO function */
+	 DA850_GPIO8_15,
+	 DA850_GPIO8_14,
+	 DA850_GPIO8_13,
+	 DA850_GPIO8_12,
+	// nmy modify end at 20111027 14:21
 };
 
 #ifdef CONFIG_DAVINCI_MUX

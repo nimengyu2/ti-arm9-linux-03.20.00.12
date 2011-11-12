@@ -672,6 +672,21 @@ static const struct mux_config da850_pins[] = {
 	MUX_CFG(DA850, VPIF_DOUT15,	17,	8,	15,	1,	false)
 	MUX_CFG(DA850, VPIF_CLKO2,	19,	12,	15,	1,	false)
 	MUX_CFG(DA850, VPIF_CLKO3,	19,	20,	15,	1,	false)
+	
+		// nmy modify start at 20111027 14:23
+	// modify for add led button
+	 /* LED GPIO function */
+    	MUX_CFG(DA850, GPIO6_10,    13, 20, 15, 8,  false)
+    	MUX_CFG(DA850, GPIO6_8,     13, 28, 15, 8,  false)
+    	MUX_CFG(DA850, GPIO6_9,     13, 24, 15, 8,  false)
+   	 MUX_CFG(DA850, GPIO6_11,    13, 16, 15, 8,  false)
+
+        /* KEY GPIO function */
+    	MUX_CFG(DA850, GPIO8_15,    18,  8, 15, 8,  false)
+   	MUX_CFG(DA850, GPIO8_14,    18, 12, 15, 8,  false)
+   	MUX_CFG(DA850, GPIO8_13,    18, 16, 15, 8,  false)
+    	MUX_CFG(DA850, GPIO8_12,    18, 20, 15, 8,  false)
+	// nmy modify end at 20111027 14:23
 #endif
 };
 

@@ -66,6 +66,12 @@ obj-$(CONFIG_BRIQ_PANEL)	+= briq_panel.o
 obj-$(CONFIG_BFIN_OTP)		+= bfin-otp.o
 
 obj-$(CONFIG_PRINTER)		+= lp.o
+#nmy modify start at 20111027 14:25
+obj-$(CONFIG_LSDDM_AMR1808_B4_LEDS) += lsddm-amr1808-b4-leds.o
+obj-$(CONFIG_LSDDM_AMR1808_B4_BUTTONS) += lsddm-amr1808-b4-buttons.o
+obj-$(CONFIG_LSDDM_AMR1808_B4_TEST_BUS) += lsddm-amr1808-b4-test-bus.o
+obj-$(CONFIG_LSD_TESTAM808_01B_V1_160160_LCD) += lsd-testam1808-01b-v1-160160-lcd.o
+#nmy modify end at 20111027 14:25
 
 obj-$(CONFIG_APM_EMULATION)	+= apm-emulation.o
 
