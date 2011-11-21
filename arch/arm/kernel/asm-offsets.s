@@ -69,7 +69,7 @@ main:
 #APP
 @ 41 "arch/arm/kernel/asm-offsets.c" 1
 	
-->TSK_ACTIVE_MM #236 offsetof(struct task_struct, active_mm)	@
+->TSK_ACTIVE_MM #220 offsetof(struct task_struct, active_mm)	@
 @ 0 "" 2
 @ 42 "arch/arm/kernel/asm-offsets.c" 1
 	
