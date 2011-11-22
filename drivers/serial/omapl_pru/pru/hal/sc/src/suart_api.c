@@ -1,24 +1,3 @@
-﻿/*
- * pru/hal/uart/src/suart_api.c
- *
- * Copyright (C) 2010 Texas Instruments Incorporated
- * Author: Jitendra Kumar <jitendra@mistralsolutions.com>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as  published by the
- * Free Software Foundation version 2.
- *
- * This program is distributed "as is" WITHOUT ANY WARRANTY of any kind,
- * whether express or implied; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
- */
-
-/*
- *====================
- * Includes
- *====================
- */
 
 #include "suart_api.h"
 #include "suart_pru_regs.h"
@@ -26,7 +5,6 @@
 #include "omapl_suart_board.h"
 #include "suart_utils.h"
 #include "suart_err.h"
-
 #include <linux/kernel.h>
 #include <linux/errno.h>
 #include <linux/init.h>
@@ -37,17 +15,12 @@
 #include <linux/serial_core.h>
 #include <linux/module.h>
 #include <linux/io.h>
-
 #include <linux/delay.h>
-
 #include <mach/hardware.h>
-
 #include "csl/cslr_mcasp.h"
 #include "csl/cslr_syscfg0_OMAPL138.h"
 #include "csl/cslr_gpio.h"
 #include "csl/cslr_ehrpwm.h"
-
-
 static unsigned char gUartStatuTable[8];
 static arm_pru_iomap pru_arm_iomap;
 static int suart_set_pru_id (unsigned int pru_no);
@@ -3990,11 +3963,12 @@ void pru_screader_init(arm_pru_iomap * pru_arm_iomap)
 	SyscfgRegs->PINMUX1 = TmpRegVal;*/
 
 	/* VCCEN */
-	/*TmpRegVal  = SyscfgRegs->PINMUX2;
-	TmpRegVal &= ~(CSL_SYSCFG_PINMUX2_PINMUX2_3_0_MASK);
-	TmpRegVal |=  (CSL_SYSCFG_PINMUX2_PINMUX2_3_0_GPIO1_15 << CSL_SYSCFG_PINMUX2_PINMUX2_3_0_SHIFT);
-	SyscfgRegs->PINMUX2 = TmpRegVal;
-*/
+	// GPIO8[15] 用于电源控制
+	TmpRegVal  = SyscfgRegs->PINMUX18;
+	TmpRegVal &= ~(CSL_SYSCFG_PINMUX18_PINMUX18_11_8_MASK);
+	TmpRegVal |=  (CSL_SYSCFG_PINMUX18_PINMUX18_11_8_GPIO8_15 << CSL_SYSCFG_PINMUX18_PINMUX18_11_8_SHIFT);
+	SyscfgRegs->PINMUX18 = TmpRegVal;
+
 	/* VPP */
 	/*TmpRegVal  = SyscfgRegs->PINMUX0;
 	TmpRegVal &= ~(CSL_SYSCFG_PINMUX0_PINMUX0_23_20_MASK);
@@ -4010,14 +3984,22 @@ void pru_screader_init(arm_pru_iomap * pru_arm_iomap)
 	//Gpio->BANK[GP0].DIR = TmpRegVal;
 
 // nmy modify
-TmpRegVal  = Gpio->BANK[GP8].DIR;
+	TmpRegVal  = Gpio->BANK[GP8].DIR;
 	TmpRegVal &= ~(GP8P14);  // Set the RESET As out pin
 	Gpio->BANK[GP8].DIR = TmpRegVal;
 
+	TmpRegVal  = Gpio->BANK[GP8].DIR;
+	TmpRegVal &= ~(GP8P15);  // Set the VCCEN As out pin
+	Gpio->BANK[GP8].DIR = TmpRegVal;
+
 	// Pull the VCC, VPP and Reset Down at the time of Initialisation
-// nmy modify
+	// nmy modify
 	//Gpio->BANK[GP0].CLR_DATA = (GP0P11);
+printk("pru-esam-reset-low in function %s\n",__FUNCTION__);
 Gpio->BANK[GP8].CLR_DATA = (GP8P14);
+// 上电
+printk("pru-esam-power-on at function %s\n",__FUNCTION__);
+Gpio->BANK[GP8].SET_DATA = (GP8P15);
 	//Gpio->BANK[GP0].CLR_DATA = (GP1P15);
 	//Gpio->BANK[GP0].CLR_DATA = (GP0P10);
 
@@ -4031,6 +4013,7 @@ void pru_scrdr_powerup_card(arm_pru_iomap * pru_arm_iomap)
 	printk(KERN_DEBUG "%s : Smart Card Powered Up\n", __FUNCTION__);
 	// RESET the Card
 	//Gpio->BANK[GP0].CLR_DATA = (GP0P11);
+printk("pru-esam-reset-low in function %s\n",__FUNCTION__);
 Gpio->BANK[GP8].CLR_DATA = (GP8P14);
 	mdelay(1000);
 	//nmy modify
@@ -4040,6 +4023,7 @@ Gpio->BANK[GP8].CLR_DATA = (GP8P14);
 	//mdelay(1000);
 	// Go out of RESET
 	//Gpio->BANK[GP0].SET_DATA = (GP0P11);  
+printk("pru-esam-reset-high in function %s\n",__FUNCTION__);
 Gpio->BANK[GP8].SET_DATA = (GP8P14);
 
 	return;
@@ -4052,6 +4036,7 @@ void pru_scrdr_powerdown_card(arm_pru_iomap * pru_arm_iomap)
 	printk(KERN_DEBUG "%s : Smart Card Powered Down\n", __FUNCTION__);
 	// RESET the Card
 	//Gpio->BANK[GP0].CLR_DATA = (GP0P11);
+printk("pru-esam-reset-low in function %s\n",__FUNCTION__);
 Gpio->BANK[GP8].CLR_DATA = (GP8P14);
 	//wait for a while
 	mdelay(1000);
@@ -4080,12 +4065,14 @@ void pru_scrdr_reset_card(arm_pru_iomap * pru_arm_iomap)
 	
 	printk(KERN_DEBUG "%s : Smart Card RESET Line Pulled LOW\n", __FUNCTION__);
 	//Gpio->BANK[GP0].CLR_DATA = (GP0P11);
+printk("pru-esam-reset-low in function %s\n",__FUNCTION__);
 Gpio->BANK[GP8].CLR_DATA = (GP8P14);
 	//wait for a while
 	mdelay(1000);
 	// Go out of Reset
 	printk(KERN_DEBUG "%s : Smart Card RESET Line Pulled HIGH\n", __FUNCTION__);
 	//Gpio->BANK[GP0].SET_DATA = (GP0P11);
+printk("pru-esam-reset-high in function %s\n",__FUNCTION__);
 Gpio->BANK[GP8].SET_DATA = (GP8P14);
 
 	return;
@@ -4124,6 +4111,12 @@ void pru_scrdr_enable_reset(arm_pru_iomap * pru_arm_iomap)
 
    printk(KERN_DEBUG "%s : Make RESET UP\n", __FUNCTION__);
    //Gpio->BANK[GP0].SET_DATA = (GP0P11);  
+
+printk("pru-esam-reset-low in function %s\n",__FUNCTION__);
+Gpio->BANK[GP8].CLR_DATA = (GP8P14);
+	//wait for a while
+	mdelay(1000);
+printk("pru-esam-reset-high in function %s\n",__FUNCTION__);
 Gpio->BANK[GP8].SET_DATA = (GP8P14);
 
    return;
