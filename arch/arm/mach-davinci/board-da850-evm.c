@@ -1109,12 +1109,12 @@ static __init void da850_evm_init(void)
 				ret);
 
 	platform_device_register(&da850_gpio_i2c);
-/*
+
 	ret = da8xx_register_watchdog();
 	if (ret)
 		pr_warning("da830_evm_init: watchdog registration failed: %d\n",
 				ret);
-
+/*
 	if (HAS_MMC) {
 		ret = da8xx_pinmux_setup(da850_mmcsd0_pins);
 		if (ret)
