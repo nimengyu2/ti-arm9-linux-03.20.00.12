@@ -13,20 +13,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * General Public License for more details.
  */
-
 /*
  *====================
  * Includes
  *====================
  */
-
 #include "suart_api.h"
 #include "suart_pru_regs.h"
 #include "pru.h"
 #include "omapl_suart_board.h"
 #include "suart_utils.h"
 #include "suart_err.h"
-
 #include <linux/kernel.h>
 #include <linux/errno.h>
 #include <linux/init.h>
@@ -37,17 +34,12 @@
 #include <linux/serial_core.h>
 #include <linux/module.h>
 #include <linux/io.h>
-
 #include <linux/delay.h>
-
 #include <mach/hardware.h>
-
 #include "csl/cslr_mcasp.h"
 #include "csl/cslr_syscfg0_OMAPL138.h"
 #include "csl/cslr_gpio.h"
 #include "csl/cslr_ehrpwm.h"
-
-
 static unsigned char gUartStatuTable[8];
 static arm_pru_iomap pru_arm_iomap;
 static int suart_set_pru_id (unsigned int pru_no);
@@ -3942,13 +3934,13 @@ void pru_screader_init(arm_pru_iomap * pru_arm_iomap)
     SyscfgRegs->CFGCHIP1 |= (CSL_SYSCFG_CFGCHIP1_TBCLKSYNC_ENABLE << CSL_SYSCFG_CFGCHIP1_TBCLKSYNC_SHIFT);
     ePwm->TBCTL   = 0x12B3;
 
- /* clk */
+ 	/* clk */
     TmpRegVal  = SyscfgRegs->PINMUX1;
     TmpRegVal &= ~(CSL_SYSCFG_PINMUX1_PINMUX1_3_0_MASK);
     TmpRegVal |=  (CSL_SYSCFG_PINMUX1_PINMUX1_3_0_ECAP2 << CSL_SYSCFG_PINMUX1_PINMUX1_3_0_SHIFT);
     SyscfgRegs->PINMUX1 = TmpRegVal;
 
-   /* Parity */
+    /* Parity */
     TmpRegVal  = SyscfgRegs->PINMUX5;
     TmpRegVal &= ~(CSL_SYSCFG_PINMUX5_PINMUX5_3_0_MASK);
     TmpRegVal |=  (CSL_SYSCFG_PINMUX5_PINMUX5_3_0_EPWM1A << CSL_SYSCFG_PINMUX5_PINMUX5_3_0_SHIFT);
@@ -3964,7 +3956,6 @@ void pru_screader_init(arm_pru_iomap * pru_arm_iomap)
     ePwm->CMPB    = 0x77;
     ePwm->TBCTL   = 0x12B3;
 
-// ‘≠∞ÊTI’º”√“˝Ω≈
 // RESET  AHCLKR/UART1_RTS/GP0[11]
 // CARD_PRESENT    GPIO0_2
 // VCC_EN   GPIO1_15
@@ -3977,8 +3968,8 @@ void pru_screader_init(arm_pru_iomap * pru_arm_iomap)
 	//TmpRegVal |=  (CSL_SYSCFG_PINMUX0_PINMUX0_19_16_GPIO0_11 << CSL_SYSCFG_PINMUX0_PINMUX0_19_16_SHIFT);
 	//SyscfgRegs->PINMUX0 = TmpRegVal;
 	TmpRegVal  = SyscfgRegs->PINMUX18;
-	TmpRegVal &= ~(CSL_SYSCFG_PINMUX18_PINMUX18_15_12_MASK);
-	TmpRegVal |=  (CSL_SYSCFG_PINMUX18_PINMUX18_15_12_GPIO8_14 << CSL_SYSCFG_PINMUX18_PINMUX18_15_12_SHIFT);
+	TmpRegVal &= ~(CSL_SYSCFG_PINMUX18_PINMUX18_11_8_MASK);
+	TmpRegVal |=  (CSL_SYSCFG_PINMUX18_PINMUX18_11_8_GPIO8_15<< CSL_SYSCFG_PINMUX18_PINMUX18_11_8_SHIFT);
 	SyscfgRegs->PINMUX18 = TmpRegVal;
 // nmy modify end 20110628 11_25 
 
@@ -3988,13 +3979,15 @@ void pru_screader_init(arm_pru_iomap * pru_arm_iomap)
 	TmpRegVal &= ~(CSL_SYSCFG_PINMUX1_PINMUX1_23_20_MASK);
 	TmpRegVal |=  (CSL_SYSCFG_PINMUX1_PINMUX1_23_20_GPIO0_2 << CSL_SYSCFG_PINMUX1_PINMUX1_23_20_SHIFT);
 	SyscfgRegs->PINMUX1 = TmpRegVal;*/
-
+/**/
+// Êàë‰ª¨ËøôÈáå‰ΩøÁî®ÁöÑ VCCENÂºïËÑö‰∏∫ MMCSD1_D0 / RPI_CH0_CLK / GPIO8[15]
+// ËøôÈáåÈÖçÁΩÆÂºïËÑöÂäüËÉΩ‰∏∫GPIO8[15]
 	/* VCCEN */
-	/*TmpRegVal  = SyscfgRegs->PINMUX2;
-	TmpRegVal &= ~(CSL_SYSCFG_PINMUX2_PINMUX2_3_0_MASK);
-	TmpRegVal |=  (CSL_SYSCFG_PINMUX2_PINMUX2_3_0_GPIO1_15 << CSL_SYSCFG_PINMUX2_PINMUX2_3_0_SHIFT);
-	SyscfgRegs->PINMUX2 = TmpRegVal;
-*/
+	//TmpRegVal  = SyscfgRegs->PINMUX18;
+	//TmpRegVal &= ~(CSL_SYSCFG_PINMUX18_PINMUX18_11_8_MASK);
+	//TmpRegVal |=  (CSL_SYSCFG_PINMUX18_PINMUX18_11_8_GPIO8_15<< CSL_SYSCFG_PINMUX18_PINMUX18_11_8_SHIFT);
+	//SyscfgRegs->PINMUX18 = TmpRegVal;
+
 	/* VPP */
 	/*TmpRegVal  = SyscfgRegs->PINMUX0;
 	TmpRegVal &= ~(CSL_SYSCFG_PINMUX0_PINMUX0_23_20_MASK);
@@ -4009,15 +4002,21 @@ void pru_screader_init(arm_pru_iomap * pru_arm_iomap)
 	//TmpRegVal |=  (GP0P2);   // Set the CARD DETECT As Input pin
 	//Gpio->BANK[GP0].DIR = TmpRegVal;
 
-// nmy modify
-TmpRegVal  = Gpio->BANK[GP8].DIR;
-	TmpRegVal &= ~(GP8P14);  // Set the RESET As out pin
+// nmy modify  RESET ÂºïËÑöËÆæÂÆö‰∏∫ËæìÂá∫ GPIO8[15]
+	TmpRegVal  = Gpio->BANK[GP8].DIR;
+	TmpRegVal &= ~(GP8P15);  // Set the RESET As out pin
 	Gpio->BANK[GP8].DIR = TmpRegVal;
 
+// nmy modify ËÆæÂÆöVCCEN‰∏∫ËæìÂá∫ÂºïËÑö GPIO8[15]
+	//TmpRegVal  = Gpio->BANK[GP8].DIR;
+	//TmpRegVal &= ~(GP8P15);  // Set the VCCEN As out pin
+	//Gpio->BANK[GP8].DIR = TmpRegVal;
+
 	// Pull the VCC, VPP and Reset Down at the time of Initialisation
-// nmy modify
+// nmy modify  ËÆæÂÆöÈªòËÆ§ÁöÑËæìÂá∫ÁîµÂπ≥
 	//Gpio->BANK[GP0].CLR_DATA = (GP0P11);
-Gpio->BANK[GP8].CLR_DATA = (GP8P14);
+	Gpio->BANK[GP8].CLR_DATA = (GP8P15);
+	printk("pru-esam-power-reset down in function %s\n",__FUNCTION__);
 	//Gpio->BANK[GP0].CLR_DATA = (GP1P15);
 	//Gpio->BANK[GP0].CLR_DATA = (GP0P10);
 
@@ -4031,7 +4030,12 @@ void pru_scrdr_powerup_card(arm_pru_iomap * pru_arm_iomap)
 	printk(KERN_DEBUG "%s : Smart Card Powered Up\n", __FUNCTION__);
 	// RESET the Card
 	//Gpio->BANK[GP0].CLR_DATA = (GP0P11);
-Gpio->BANK[GP8].CLR_DATA = (GP8P14);
+	//printk("pru-esam-power on in function %s\n",__FUNCTION__);
+	// ‰∏äÁîµ
+	//Gpio->BANK[GP8].SET_DATA = (GP8P15);
+	//mdelay(100);
+	// Â§ç‰Ωç
+	Gpio->BANK[GP8].CLR_DATA = (GP8P15);
 	mdelay(1000);
 	//nmy modify
 	// ENABLE VCC
@@ -4040,7 +4044,7 @@ Gpio->BANK[GP8].CLR_DATA = (GP8P14);
 	//mdelay(1000);
 	// Go out of RESET
 	//Gpio->BANK[GP0].SET_DATA = (GP0P11);  
-Gpio->BANK[GP8].SET_DATA = (GP8P14);
+	Gpio->BANK[GP8].SET_DATA = (GP8P15);
 
 	return;
 }
@@ -4052,7 +4056,10 @@ void pru_scrdr_powerdown_card(arm_pru_iomap * pru_arm_iomap)
 	printk(KERN_DEBUG "%s : Smart Card Powered Down\n", __FUNCTION__);
 	// RESET the Card
 	//Gpio->BANK[GP0].CLR_DATA = (GP0P11);
-Gpio->BANK[GP8].CLR_DATA = (GP8P14);
+	// ‰∏ãÁîµ
+	//printk("pru-esam-power down in function %s\n",__FUNCTION__);
+	//Gpio->BANK[GP8].CLR_DATA = (GP8P15);
+	Gpio->BANK[GP8].CLR_DATA = (GP8P15);
 	//wait for a while
 	mdelay(1000);
 	// nmy modify
@@ -4066,7 +4073,6 @@ void pru_scrdr_reset_card(arm_pru_iomap * pru_arm_iomap)
 {
 	CSL_GpioRegsOvly   Gpio = (CSL_GpioRegsOvly) pru_arm_iomap->gpio_io_addr;
 
-	// ø®¥Ê‘⁄ºÏ≤‚,“ÚŒ™Œ“√«µƒ∞Â◊”√ª”–ø®ºÏ≤‚“˝Ω≈,À˘“‘◊¢ ÕµÙ
 	// nmy modify
 	/* If Card is not powered up then power up the card */
 	//if(!(Gpio->BANK[GP0].IN_DATA & GP1P15)) {
@@ -4080,13 +4086,13 @@ void pru_scrdr_reset_card(arm_pru_iomap * pru_arm_iomap)
 	
 	printk(KERN_DEBUG "%s : Smart Card RESET Line Pulled LOW\n", __FUNCTION__);
 	//Gpio->BANK[GP0].CLR_DATA = (GP0P11);
-Gpio->BANK[GP8].CLR_DATA = (GP8P14);
+Gpio->BANK[GP8].CLR_DATA = (GP8P15);
 	//wait for a while
 	mdelay(1000);
 	// Go out of Reset
 	printk(KERN_DEBUG "%s : Smart Card RESET Line Pulled HIGH\n", __FUNCTION__);
 	//Gpio->BANK[GP0].SET_DATA = (GP0P11);
-Gpio->BANK[GP8].SET_DATA = (GP8P14);
+Gpio->BANK[GP8].SET_DATA = (GP8P15);
 
 	return;
 }
@@ -4095,7 +4101,6 @@ short pru_scrdr_iscard_present(arm_pru_iomap * pru_arm_iomap)
 {
 	CSL_GpioRegsOvly   Gpio = (CSL_GpioRegsOvly) pru_arm_iomap->gpio_io_addr;
 
-	// nmy modify  ºÏ≤‚ø®¥Ê‘⁄µƒ“˝Ω≈
 	//if(Gpio->BANK[GP0].IN_DATA & GP0P2) {
 	//	printk(KERN_DEBUG "%s : Smart Card NOT PRESENT in slot\n", __FUNCTION__);
 	//	return PRU_SUART_FAILURE;
@@ -4110,11 +4115,13 @@ void pru_scrdr_enable_vcc(arm_pru_iomap * pru_arm_iomap)
    CSL_GpioRegsOvly   Gpio = (CSL_GpioRegsOvly) pru_arm_iomap->gpio_io_addr;
 
    printk(KERN_DEBUG "%s : Make VCC UP\n", __FUNCTION__);
-   // nmy modify …œµÁøÿ÷∆“˝Ω≈,“ÚŒ™Œ“√«µƒ∞Â◊”√ª”–…œµÁøÿ÷∆,“Ú¥À◊¢ ÕµÙ
    // ENABLE VCC
    //Gpio->BANK[GP0].SET_DATA = (GP1P15);  
    //mdelay(1000);
-
+	printk("pru-esam-power on in function %s\n",__FUNCTION__);
+	// ‰∏äÁîµ
+	Gpio->BANK[GP8].SET_DATA = (GP8P15);
+	mdelay(100);
    return;
 }
 
@@ -4124,7 +4131,7 @@ void pru_scrdr_enable_reset(arm_pru_iomap * pru_arm_iomap)
 
    printk(KERN_DEBUG "%s : Make RESET UP\n", __FUNCTION__);
    //Gpio->BANK[GP0].SET_DATA = (GP0P11);  
-Gpio->BANK[GP8].SET_DATA = (GP8P14);
+Gpio->BANK[GP8].SET_DATA = (GP8P15);
 
    return;
 }
@@ -4134,9 +4141,10 @@ int pru_scrdr_isvccenabled(arm_pru_iomap * pru_arm_iomap)
    CSL_GpioRegsOvly   Gpio = (CSL_GpioRegsOvly) pru_arm_iomap->gpio_io_addr;
    // nmy modify
    //if(Gpio->BANK[GP0].IN_DATA & GP1P15)
-	   return PRU_SUART_SUCCESS;
+	//if(Gpio->BANK[GP8].IN_DATA & GP8P15)
+   		return PRU_SUART_SUCCESS;
 
-   //return PRU_SUART_FAILURE;
+    //return PRU_SUART_FAILURE;
 }
 /* End of file */
 
