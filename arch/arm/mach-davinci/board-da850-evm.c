@@ -62,6 +62,7 @@
 #define DA850_USB1_VBUS_PIN		GPIO_TO_PIN(2, 4)
 #define DA850_USB1_OC_PIN		GPIO_TO_PIN(6, 13)
 
+#if 0
 static struct mtd_partition da850_evm_norflash_partition[] = {
 	{
 		.name           = "bootloaders + env",
@@ -122,7 +123,7 @@ static struct platform_device da850_evm_norflash_device = {
 	.num_resources	= ARRAY_SIZE(da850_evm_norflash_resource),
 	.resource	= da850_evm_norflash_resource,
 };
-
+#endif
 static struct davinci_pm_config da850_pm_pdata = {
 	.sleepcount = 128,
 };
@@ -217,9 +218,9 @@ static struct platform_device da850_evm_nandflash_device = {
 
 static struct platform_device *da850_evm_devices[] __initdata = {
 	&da850_evm_nandflash_device,
-	&da850_evm_norflash_device,
+	//&da850_evm_norflash_device,
 };
-
+#if 0
 static struct mtd_partition spi_flash_partitions[] = {
 	[0] = {
 		.name = "U-Boot",
@@ -266,7 +267,7 @@ static struct spi_board_info da850_spi_board_info[] = {
 		.chip_select = 0,
 	},
 };
-
+#endif
 static u32 ui_card_detected;
 
 #if defined(CONFIG_MMC_DAVINCI) || \
@@ -275,7 +276,7 @@ static u32 ui_card_detected;
 #else
 #define HAS_MMC 0
 #endif
-
+#if 0
 static __init void da850_evm_setup_nor_nand(void)
 {
 	int ret = 0;
@@ -295,7 +296,7 @@ static __init void da850_evm_setup_nor_nand(void)
 					ARRAY_SIZE(da850_evm_devices));
 	}
 }
-
+#endif
 #ifdef CONFIG_DA850_UI_RMII
 static inline void da850_evm_setup_emac_rmii(int rmii_sel)
 {
@@ -308,6 +309,7 @@ static inline void da850_evm_setup_emac_rmii(int rmii_sel)
 static inline void da850_evm_setup_emac_rmii(int rmii_sel) { }
 #endif
 
+#if 0
 #ifdef CONFIG_DA850_UI_CLCD
 static inline void da850_evm_setup_char_lcd(int a, int b, int c)
 {
@@ -401,7 +403,7 @@ static struct pca953x_platform_data da850_evm_ui_expander_info = {
 	.setup		= da850_evm_ui_expander_setup,
 	.teardown	= da850_evm_ui_expander_teardown,
 };
-
+#endif
 /* TPS65070 voltage regulator support */
 
 /* 3.3V */
@@ -547,7 +549,7 @@ static struct i2c_board_info __initdata da850_evm_i2c_devices[] = {
 		I2C_BOARD_INFO("tps6507x", 0x48),
 		.platform_data = &tps_board,
 	},
-	{
+	/*{
 		I2C_BOARD_INFO("tlv320aic3x", 0x18),
 	},
 	{
@@ -556,13 +558,14 @@ static struct i2c_board_info __initdata da850_evm_i2c_devices[] = {
 	},
 	{
 		I2C_BOARD_INFO("cdce913", 0x65),
-	},
+	},*/
 };
 
 static struct davinci_uart_config da850_evm_uart_config __initdata = {
 	.enabled_uarts = 0x7,
 };
 
+#if 0
 /* davinci da850 evm audio machine driver */
 static u8 da850_iis_serializer_direction[] = {
 	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,
@@ -658,7 +661,7 @@ static const short da850_evm_lcdc_pins[] = {
 	DA850_GPIO2_8, /*DA850_GPIO2_15,*/
 	-1
 };
-
+#endif
 static int __init da850_evm_config_emac(void)
 {
 	void __iomem *cfg_chip3_base;
@@ -725,6 +728,7 @@ static int __init da850_evm_config_emac(void)
 }
 device_initcall(da850_evm_config_emac);
 
+#if 0
 /* Retaining these APIs, since the VPIF drivers do not check NULL handlers */
 static int da850_set_vpif_clock(int mux_mode, int hd)
 {
@@ -860,7 +864,7 @@ static struct vpif_display_config da850_vpif_display_config = {
 	.output_count	= ARRAY_SIZE(vpif_output),
 	.card_name	= "DA850/OMAP-L138 Video Display",
 };
-
+#endif
 #if defined(CONFIG_DAVINCI_MCBSP0)
 #define HAS_MCBSP0 1
 #else
@@ -1044,7 +1048,7 @@ static struct platform_device da850_gpio_i2c = {
 		.platform_data	= &da850_gpio_i2c_pdata,
 	},
 };
-
+#if 0
 static int __init da850_evm_config_pru_can(void)
 {
     int ret;
@@ -1069,6 +1073,7 @@ static int __init da850_evm_config_pru_can(void)
     return ret;
 }
 device_initcall(da850_evm_config_pru_can);
+#endif
 
 static int __init da850_evm_config_pru_suart(void)
 {
@@ -1104,7 +1109,7 @@ static __init void da850_evm_init(void)
 				ret);
 
 	platform_device_register(&da850_gpio_i2c);
-
+/*
 	ret = da8xx_register_watchdog();
 	if (ret)
 		pr_warning("da830_evm_init: watchdog registration failed: %d\n",
@@ -1133,7 +1138,7 @@ static __init void da850_evm_init(void)
 			pr_warning("da850_evm_init: mmcsd0 registration failed:"
 					" %d\n", ret);
 	}
-
+*/
 	davinci_serial_init(&da850_evm_uart_config);
 
 	i2c_register_board_info(1, da850_evm_i2c_devices,
@@ -1211,11 +1216,11 @@ static __init void da850_evm_init(void)
 	if (ret)
 		pr_warning("da850_evm_init: lcdc registration failed: %d\n",
 				ret);
-*/
+
 	ret = da8xx_register_rtc();
 	if (ret)
 		pr_warning("da850_evm_init: rtc setup failed: %d\n", ret);
-
+*/
 	ret = da850_register_cpufreq();
 	if (ret)
 		pr_warning("da850_evm_init: cpufreq registration failed: %d\n",
@@ -1225,12 +1230,12 @@ static __init void da850_evm_init(void)
 	if (ret)
 		pr_warning("da850_evm_init: cpuidle registration failed: %d\n",
 				ret);
-
+/*
 	ret = da850_register_pm(&da850_pm_device);
 	if (ret)
 		pr_warning("da850_evm_init: suspend registration failed: %d\n",
 				ret);
-/*
+
 	ret = da8xx_pinmux_setup(da850_spi1_pins);
 	if (ret)
 		pr_warning("da850_evm_init: spi1 mux setup failed: %d\n",
