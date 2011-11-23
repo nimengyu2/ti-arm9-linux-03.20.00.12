@@ -422,6 +422,28 @@ static struct clk ecap_clk = {
     .gpsc       = 1,
     .flags          = DA850_CLK_ASYNC3,
 };
+// nmy modify start
+struct clk pwm0_clk = {
+	.name		= "pwm0",
+	.parent		= &pll0_sysclk2,
+	.lpsc		= DA8XX_LPSC1_PWM,
+	.gpsc		= 1,
+};
+
+ struct clk pwm1_clk = {
+	.name		= "pwm1",
+	.parent		= &pll0_sysclk2,
+	.lpsc		= DA8XX_LPSC1_PWM,
+	.gpsc		= 1,
+};
+
+ struct clk pwm2_clk = {
+	.name		= "pwm2",
+	.parent		= &pll0_sysclk2,
+	.lpsc		= DA8XX_LPSC1_PWM,
+	.gpsc		= 1,
+};
+// nmy modify end
 
 static struct clk_lookup da850_clks[] = {
 	CLK(NULL,		"ref",		&ref_clk),
@@ -476,6 +498,11 @@ static struct clk_lookup da850_clks[] = {
 	CLK(NULL,		"usb11",	&usb11_clk),
 	CLK(NULL,		"usb20",	&usb20_clk),
 	CLK(NULL,		"ahci",		&sata_clk),
+	// nmy modify start 
+	CLK(NULL,		"pwm0",		&pwm0_clk),
+	CLK(NULL,		"pwm1",		&pwm1_clk),
+	CLK(NULL,		"pwm2",		&pwm2_clk),
+	// nmy modify end
 
 	CLK(NULL,		NULL,		NULL),
 };
