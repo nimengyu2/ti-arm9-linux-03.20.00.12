@@ -78,6 +78,11 @@ obj-$(CONFIG_HPET)		+= hpet.o
 obj-$(CONFIG_GEN_RTC)		+= genrtc.o
 obj-$(CONFIG_EFI_RTC)		+= efirtc.o
 obj-$(CONFIG_DS1302)		+= ds1302.o
+
+# nmy modify start
+obj-$(CONFIG_LSD_AM1808_FOR_SZLY_BOARD_PWM)     += lsd-am1808-for-szly-board-pwm.o 
+# nmy modify end
+
 obj-$(CONFIG_XILINX_HWICAP)	+= xilinx_hwicap/
 ifeq ($(CONFIG_GENERIC_NVRAM),y)
   obj-$(CONFIG_NVRAM)	+= generic_nvram.o
