@@ -146,19 +146,22 @@ struct mtd_partition da850_evm_nandflash_partition[] = {
 		.name		= "u-boot env",
 		.offset		= 0,
 		.size		= SZ_128K,
-		.mask_flags	= MTD_WRITEABLE,
+		//.mask_flags	= MTD_WRITEABLE,
+		.mask_flags	= 0,
 	 },
 	{
 		.name		= "UBL",
 		.offset		= MTDPART_OFS_APPEND,
 		.size		= SZ_128K,
-		.mask_flags	= MTD_WRITEABLE,
+		//.mask_flags	= MTD_WRITEABLE,
+		.mask_flags	= 0,
 	},
 	{
 		.name		= "u-boot",
 		.offset		= MTDPART_OFS_APPEND,
 		.size		= 4 * SZ_128K,
-		.mask_flags	= MTD_WRITEABLE,
+		//.mask_flags	= MTD_WRITEABLE,
+		.mask_flags	= 0,
 	},
 	{
 		.name		= "kernel",
@@ -188,7 +191,7 @@ static struct davinci_nand_pdata da850_evm_nandflash_data = {
 	.parts		= da850_evm_nandflash_partition,
 	.nr_parts	= ARRAY_SIZE(da850_evm_nandflash_partition),
 	.ecc_mode	= NAND_ECC_HW,
-	.ecc_bits	= 4,
+	.ecc_bits	= 1,
 	.options	= NAND_USE_FLASH_BBT,
 	.timing		= &da850_evm_nandflash_timing,
 };
@@ -1114,6 +1117,16 @@ static __init void da850_evm_init(void)
 	if (ret)
 		pr_warning("da830_evm_init: watchdog registration failed: %d\n",
 				ret);
+
+	// 初始化nand引脚接口，并注册到内核中
+	ret = da8xx_pinmux_setup(da850_nand_pins); 
+		pr_warning("lierda_nand_pinmux %d\n", ret); 
+	if (ret) 
+	  pr_warning("da850_evm_init: nand mux setup failed: " 
+		  "%d\n", ret); 
+	platform_add_devices(da850_evm_devices, 
+		  ARRAY_SIZE(da850_evm_devices)); 
+
 /*
 	if (HAS_MMC) {
 		ret = da8xx_pinmux_setup(da850_mmcsd0_pins);
