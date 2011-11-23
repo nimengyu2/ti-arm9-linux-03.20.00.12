@@ -41,6 +41,7 @@
 #include <mach/vpif.h>
 
 #include <media/tvp514x.h>
+#include <linux/clk.h>
 
 #define DA850_EVM_PHY_MASK		0x1
 #define DA850_EVM_MDIO_FREQUENCY	2200000 /* PHY bus frequency */
@@ -1097,6 +1098,7 @@ static int __init da850_evm_config_pru_suart(void)
 }
 device_initcall(da850_evm_config_pru_suart);
 
+extern struct clk pwm1_clk;
 static __init void da850_evm_init(void)
 {
 	int ret;
@@ -1305,6 +1307,9 @@ static __init void da850_evm_init(void)
     if (ret)
         pr_warning("da850_evm_init: eCAP registration failed: %d\n",
                    ret);
+
+	// 开启pwm时钟
+	clk_enable(&pwm1_clk);
 
 }
 

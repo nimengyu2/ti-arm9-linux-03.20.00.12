@@ -444,7 +444,6 @@ struct clk pwm0_clk = {
 	.gpsc		= 1,
 };
 // nmy modify end
-
 static struct clk_lookup da850_clks[] = {
 	CLK(NULL,		"ref",		&ref_clk),
 	CLK(NULL,		"pll0",		&pll0_clk),
@@ -499,9 +498,10 @@ static struct clk_lookup da850_clks[] = {
 	CLK(NULL,		"usb20",	&usb20_clk),
 	CLK(NULL,		"ahci",		&sata_clk),
 	// nmy modify start 
-	CLK(NULL,		"pwm0",		&pwm0_clk),
-	CLK(NULL,		"pwm1",		&pwm1_clk),
-	CLK(NULL,		"pwm2",		&pwm2_clk),
+	// 备注 如果这里写了 开机的时候会默认将那些不用的clk禁止掉
+	//CLK(NULL,		"pwm0",		&pwm0_clk),
+	//CLK(NULL,		"pwm1",		&pwm1_clk),
+	//CLK(NULL,		"pwm2",		&pwm2_clk),
 	// nmy modify end
 
 	CLK(NULL,		NULL,		NULL),
@@ -764,6 +764,9 @@ static const struct mux_config da850_pins[] = {
     MUX_CFG(DA850, PRU0_R30_19,  0,	4,15, 4,     false)
     MUX_CFG(DA850, PRU0_R30_20,  0,	0, 15, 4,     false)
     MUX_CFG(DA850, PRU0_R30_23,  18,	16,  15, 1,  false)
+	
+	// EPWM0B
+	MUX_CFG(DA850,EPWM0B,		3,	4,	15,	2,	false)
 
 #endif
 };

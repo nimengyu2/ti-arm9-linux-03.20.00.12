@@ -989,6 +989,8 @@ enum davinci_da850_index {
     DA850_PRU0_R30_20,
     DA850_PRU0_R30_23,
 
+	DA850_EPWM0B,
+
 };
 
 #ifdef CONFIG_DAVINCI_MUX

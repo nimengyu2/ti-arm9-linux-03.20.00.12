@@ -81,6 +81,7 @@ obj-$(CONFIG_DS1302)		+= ds1302.o
 
 # nmy modify start
 obj-$(CONFIG_LSD_AM1808_FOR_SZLY_BOARD_PWM)     += lsd-am1808-for-szly-board-pwm.o 
+obj-$(CONFIG_LSD_AM1808_FOR_SZLY_BOARD_PWM_KERNEL)     += lsd-am1808-for-szly-board-pwm-kernel.o 
 # nmy modify end
 
 obj-$(CONFIG_XILINX_HWICAP)	+= xilinx_hwicap/
