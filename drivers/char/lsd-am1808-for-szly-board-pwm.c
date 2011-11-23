@@ -35,6 +35,7 @@
 #include <linux/delay.h>
 #include <mach/da8xx.h>
 #include <linux/clk.h>
+#include <mach/cslr_syscfg01_am1808.h>
 
 #define DEVICE_NAME "pwm" //设备名(/dev/pwm) 
 
@@ -44,39 +45,35 @@
 #define SET_PWM_ON 		_IOW(MOTOR_MAGIC, 4,int)
 #define SET_PWM_OFF 		_IOW(MOTOR_MAGIC, 5,int)
 
-// 使用的引脚为GP2[14]
-// SPI1_SCS[0]/EPWM1B/PRU0_R30[8]/GP2[14]/TM64P3_IN12
-
 // test this IO
-#define PWM1B_PIN   DA850_GPIO2_14
-#define PWM1B_NUM   (2*16+14)
- 
-#define SYSCFG0_BASE  	0x01c14000
-#define CFGCHIP1        IO_ADDRESS(SYSCFG0_BASE)+0x180
+//#define PWM1B_PIN   DA850_GPIO2_14
+//#define PWM1B_NUM   (2*16+14)
+
+#define CFGCHIP1       			SYSCFG0_BASE+0x180
 #define CFGCHIP1_TBCLKSYNC      (1 << 12)
 
 //#define PWM1B_GPIO   1
-#define EHRPWM0_BASE  		0x01F00000
-#define EHRPWM0_TBCTL 		IO_ADDRESS(EHRPWM0_BASE)+0x00
-#define EHRPWM0_TBSTS 		IO_ADDRESS(EHRPWM0_BASE)+0x02
-#define EHRPWM0_TBPHSHR 	IO_ADDRESS(EHRPWM0_BASE)+0x04
-#define EHRPWM0_TBPHS 		IO_ADDRESS(EHRPWM0_BASE)+0x06
-#define EHRPWM0_TBCNT 		IO_ADDRESS(EHRPWM0_BASE)+0x08
-#define EHRPWM0_TBPRD 		IO_ADDRESS(EHRPWM0_BASE)+0x0A
-#define EHRPWM0_CMPCTL 		IO_ADDRESS(EHRPWM0_BASE)+0x0E
-#define EHRPWM0_CMPAHR 	IO_ADDRESS(EHRPWM0_BASE)+0x10
-#define EHRPWM0_CMPA 		IO_ADDRESS(EHRPWM0_BASE)+0x12
-#define EHRPWM0_CMPB 		IO_ADDRESS(EHRPWM0_BASE)+0x14
-#define EHRPWM0_AQCTLA  	IO_ADDRESS(EHRPWM0_BASE)+0x16
-#define EHRPWM0_AQCTLB 		IO_ADDRESS(EHRPWM0_BASE)+0x18
-#define EHRPWM0_AQSFRC 		IO_ADDRESS(EHRPWM0_BASE)+0x1A
-#define EHRPWM0_AQCSFRC 	IO_ADDRESS(EHRPWM0_BASE)+0x1C
-#define EHRPWM0_DBCTL 		IO_ADDRESS(EHRPWM0_BASE)+0x1E
-#define EHRPWM0_DBRED 		IO_ADDRESS(EHRPWM0_BASE)+0x20
-#define EHRPWM0_DBFED 		IO_ADDRESS(EHRPWM0_BASE)+0x22
-#define EHRPWM0_PCCTL 		IO_ADDRESS(EHRPWM0_BASE)+0x3C
-#define EHRPWM0_TZSEL 		IO_ADDRESS(EHRPWM0_BASE)+0x24
-#define EHRPWM0_TZCTL 		IO_ADDRESS(EHRPWM0_BASE)+0x28
+#define EHRPWM0_BASE  		IO_ADDRESS(0x01F00000)
+#define EHRPWM0_TBCTL 		EHRPWM0_BASE+0x00
+#define EHRPWM0_TBSTS 		EHRPWM0_BASE+0x02
+#define EHRPWM0_TBPHSHR 	EHRPWM0_BASE+0x04
+#define EHRPWM0_TBPHS 		EHRPWM0_BASE+0x06
+#define EHRPWM0_TBCNT 		EHRPWM0_BASE+0x08
+#define EHRPWM0_TBPRD 		EHRPWM0_BASE+0x0A
+#define EHRPWM0_CMPCTL 		EHRPWM0_BASE+0x0E
+#define EHRPWM0_CMPAHR 		EHRPWM0_BASE+0x10
+#define EHRPWM0_CMPA 		EHRPWM0_BASE+0x12
+#define EHRPWM0_CMPB 		EHRPWM0_BASE+0x14
+#define EHRPWM0_AQCTLA  	EHRPWM0_BASE+0x16
+#define EHRPWM0_AQCTLB 		EHRPWM0_BASE+0x18
+#define EHRPWM0_AQSFRC 		EHRPWM0_BASE+0x1A
+#define EHRPWM0_AQCSFRC 	EHRPWM0_BASE+0x1C
+#define EHRPWM0_DBCTL 		EHRPWM0_BASE+0x1E
+#define EHRPWM0_DBRED 		EHRPWM0_BASE+0x20
+#define EHRPWM0_DBFED 		EHRPWM0_BASE+0x22
+#define EHRPWM0_PCCTL 		EHRPWM0_BASE+0x3C
+#define EHRPWM0_TZSEL 		EHRPWM0_BASE+0x24
+#define EHRPWM0_TZCTL 		EHRPWM0_BASE+0x28
 
 extern struct clk pwm1_clk;
 unsigned long g_u32_pwm_output_freq = 0;
@@ -93,7 +90,7 @@ unsigned long g_u32_pwm_output_freq = 0;
 int fn_pwm_init(void)
 {
 	unsigned short u16_tmp;
-	int i;
+	//int i;
 	unsigned long u32_period;
 	clk_enable(&pwm1_clk);	
 
@@ -107,7 +104,7 @@ int fn_pwm_init(void)
 	{
 		// 计算周期             
 		u32_period =  M_SYSTEM_CLOCK/g_u32_pwm_output_freq;
-        }  
+    }  
 	else
 	{
 		printk("PWM freq can't be 0,error!");             
@@ -204,16 +201,16 @@ static int am1808_led_ioctl(
    	{
       	 	// 用于测试该引脚是否可以使用
       	 	case SET_PWM_PIN_HIGH:
-      		 gpio_set_value(PWM1B_NUM,1); 
+      		//gpio_set_value(PWM1B_NUM,1); 
        		break;
        		case SET_PWM_PIN_LOW:
-       		gpio_set_value(PWM1B_NUM,0); 
+       		//gpio_set_value(PWM1B_NUM,0); 
        		break;
        		case SET_PWM_ON:
-		g_u32_pwm_output_freq = arg;
+			g_u32_pwm_output_freq = arg;
        		fn_pwm_init();
-      		 break;
-      		 case SET_PWM_OFF:
+      		break;
+      		case SET_PWM_OFF:
        		fn_pwm_exit();
        		break;       
        		default:
@@ -243,14 +240,20 @@ static struct miscdevice misc = {
 // 设备初始化 
 static int __init dev_init(void) 
 { 
-   	int ret; 
-    	int status;
-    	// 配置这个引脚为为EPWM0B功能
-    	status = davinci_cfg_reg(DA850_ECAP2_APWM2);
-    	if (status < 0) {
-		printk("AM1808-PWM pin could not be muxed for GPIO functionality %d\n",DA850_ECAP2_APWM2);
-		return status;
-    	}
+   		int ret; 
+    	//int status;
+		unsigned long TmpRegVal;
+
+		//  davinci_cfg_reg(DA850_EPWM0B)
+		TmpRegVal  = __raw_readl(SYSCFG0_PINMUX18);
+		TmpRegVal &= ~(CSL_SYSCFG_PINMUX3_PINMUX3_7_4_MASK);
+		TmpRegVal |=  (CSL_SYSCFG_PINMUX3_PINMUX3_7_4_EPWM0B << CSL_SYSCFG_PINMUX3_PINMUX3_7_4_SHIFT);
+		__raw_writel(TmpRegVal,SYSCFG0_PINMUX18);
+		printk("AM1808-PWM CSL_SYSCFG_PINMUX3_PINMUX3_7_4_EPWM0B \n");
+
+		g_u32_pwm_output_freq = 38000;
+        fn_pwm_init();
+
     	// 注册设备 
     	ret = misc_register(&misc); 
     	printk (DEVICE_NAME"\tinitialized\n"); //打印初始化信息 
