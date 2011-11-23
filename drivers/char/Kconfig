@@ -53,6 +53,10 @@ config LSD_AM1808_FOR_SZLY_BOARD_PWM_KERNEL
         tristate "PWM KERNEL driver for LSD-AM1808-FOR-SZLY-BOARD development boards" 
         help 
           this is PWM KERNEL driver for LSD-AM1808-FOR-SZLY-BOARD development boards 
+config LSD_AM1808_FOR_SZLY_BOARD_GPIO
+        tristate "GPIO driver for LSD-AM1808-FOR-SZLY-BOARD development boards" 
+        help 
+          this is GPIO driver for LSD-AM1808-FOR-SZLY-BOARD development boards 
 # nmy modify end
 
 config VT_CONSOLE

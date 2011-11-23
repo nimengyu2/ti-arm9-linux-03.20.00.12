@@ -989,7 +989,11 @@ enum davinci_da850_index {
     DA850_PRU0_R30_20,
     DA850_PRU0_R30_23,
 
+	// nmy modify start 
 	DA850_EPWM0B,
+	DA850_GPIO8_13,
+	DA850_GPIO6_0,
+	// nmy modify end
 
 };
 
