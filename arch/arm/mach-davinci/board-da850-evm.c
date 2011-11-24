@@ -554,6 +554,9 @@ static struct i2c_board_info __initdata da850_evm_i2c_devices[] = {
 		.platform_data = &tps_board,
 	},
 	/*{
+		I2C_BOARD_INFO("rx8581", 0x32),
+	},*/
+	/*{
 		I2C_BOARD_INFO("tlv320aic3x", 0x18),
 	},
 	{
@@ -1039,6 +1042,13 @@ static __init void da850_evm_usb_init(void)
 			   __func__, ret);
 }
 
+
+static struct davinci_i2c_platform_data da850_davinci_i2c_pdata = {
+	.bus_freq	= 100,
+	.bus_delay	= 0,
+};
+
+
 static struct i2c_gpio_platform_data da850_gpio_i2c_pdata = {
 	.sda_pin	= GPIO_TO_PIN(1, 4),
 	.scl_pin	= GPIO_TO_PIN(1, 5),
@@ -1113,7 +1123,8 @@ static __init void da850_evm_init(void)
 		pr_warning("da850_evm_init: i2c0 mux setup failed: %d\n",
 				ret);
 
-	platform_device_register(&da850_gpio_i2c);
+	//platform_device_register(&da850_gpio_i2c);
+	da8xx_register_i2c(0,&da850_davinci_i2c_pdata);
 
 	ret = da8xx_register_watchdog();
 	if (ret)
@@ -1231,7 +1242,8 @@ static __init void da850_evm_init(void)
 	if (ret)
 		pr_warning("da850_evm_init: lcdc registration failed: %d\n",
 				ret);
-
+*/
+/*
 	ret = da8xx_register_rtc();
 	if (ret)
 		pr_warning("da850_evm_init: rtc setup failed: %d\n", ret);
