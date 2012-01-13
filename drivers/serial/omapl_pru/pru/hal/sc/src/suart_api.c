@@ -3908,9 +3908,9 @@ static int suart_set_pru_id (unsigned int pru_no)
 void pru_screader_init(arm_pru_iomap * pru_arm_iomap)
 {
 	CSL_SyscfgRegsOvly SyscfgRegs = (CSL_SyscfgRegsOvly) pru_arm_iomap->syscfg_io_addr;
-	CSL_GpioRegsOvly   Gpio       = (CSL_GpioRegsOvly) pru_arm_iomap->gpio_io_addr;
+    CSL_GpioRegsOvly   Gpio       = (CSL_GpioRegsOvly) pru_arm_iomap->gpio_io_addr;
     CSL_ePWMRegsOvly   ePwm       = (CSL_ePWMRegsOvly) pru_arm_iomap->ehrpwm1_io_addr;
-	Uint32		   TmpRegVal  = 0;
+    Uint32		   TmpRegVal  = 0;
 
     SyscfgRegs->CFGCHIP1 |= (CSL_SYSCFG_CFGCHIP1_TBCLKSYNC_ENABLE << CSL_SYSCFG_CFGCHIP1_TBCLKSYNC_SHIFT);
     ePwm->TBCTL   = 0x12B3;

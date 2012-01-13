@@ -1131,7 +1131,7 @@ static __init void da850_evm_init(void)
 		pr_warning("da830_evm_init: watchdog registration failed: %d\n",
 				ret);
 
-	// 初始化nand引脚接口，并注册到内核中
+	//  
 	ret = da8xx_pinmux_setup(da850_nand_pins); 
 		pr_warning("lierda_nand_pinmux %d\n", ret); 
 	if (ret) 
@@ -1320,7 +1320,7 @@ static __init void da850_evm_init(void)
         pr_warning("da850_evm_init: eCAP registration failed: %d\n",
                    ret);
 
-	// 开启pwm时钟
+	//  
 	clk_enable(&pwm1_clk);
 
 }
