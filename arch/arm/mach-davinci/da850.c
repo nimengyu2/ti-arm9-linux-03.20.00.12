@@ -1,5 +1,5 @@
 /*
- * TI DA850/OMAP-L138 chip specific setup
+* TI DA850/OMAP-L138 chip specific setup
  *
  * Copyright (C) 2009 Texas Instruments Incorporated - http://www.ti.com/
  *
@@ -764,6 +764,9 @@ static const struct mux_config da850_pins[] = {
     MUX_CFG(DA850, PRU0_R30_19,  0,	4,15, 4,     false)
     MUX_CFG(DA850, PRU0_R30_20,  0,	0, 15, 4,     false)
     MUX_CFG(DA850, PRU0_R30_23,  18,	16,  15, 1,  false)
+
+	MUX_CFG(DA850, PRU0_R30_28,  13,	20,  15, 1,  false)
+	MUX_CFG(DA850, PRU0_R30_27,  13,	24,  15, 1,  false)
 	
 	// EPWM0B
 	MUX_CFG(DA850,EPWM0B,		3,	4,	15,	2,	false)
@@ -802,8 +805,10 @@ const short da850_pru_suart_pins[] __initdata = {
 	DA850_UART1_RXD, DA850_UART1_TXD, DA850_PRU0_R30_16,
 	// nmy modify	
 	DA850_PRU0_R30_19,
-    	DA850_PRU0_R30_20,
-    	DA850_PRU0_R30_23,
+    DA850_PRU0_R30_20,
+    DA850_PRU0_R30_23,
+	DA850_PRU0_R30_28,
+	DA850_PRU0_R30_27,
 	-1
 };
 

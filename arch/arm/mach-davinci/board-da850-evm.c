@@ -1100,6 +1100,9 @@ static int __init da850_evm_config_pru_suart(void)
     if (ret)
         pr_warning("da850_evm_init: da850_pru_suart_pins mux setup failed: %d\n",
                 ret);
+	else
+		pr_warning("da850_evm_init: da850_pru_suart_pins mux setup ok: %d\n",
+                ret);
 
     ret = da8xx_register_pru_suart();
     if (ret)
