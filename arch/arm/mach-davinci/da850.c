@@ -415,7 +415,7 @@ static struct clk sata_clk = {
 	.gpsc		= 1,
 };
 
-static struct clk ecap_clk = {
+struct clk ecap_clk = {
     .name       = "ecap",
     .parent     = &pll0_sysclk2,
     .lpsc       = DA8XX_LPSC1_ECAP,
@@ -525,8 +525,11 @@ static const struct mux_config da850_pins[] = {
 	MUX_CFG(DA850, UART0_RXD,	3,	16,	15,	2,	false)
 	MUX_CFG(DA850, UART0_TXD,	3,	20,	15,	2,	false)
 	/* UART1 function */
+	MUX_CFG(DA850, NUART1_CTS,	0,	20,	15,	4,	false)
+	MUX_CFG(DA850, NUART1_RTS,	0,	16,	15,	4,	false)
 	MUX_CFG(DA850, UART1_RXD,	4,	24,	15,	2,	false)
 	MUX_CFG(DA850, UART1_TXD,	4,	28,	15,	2,	false)
+
 	/* UART2 function */
 	MUX_CFG(DA850, UART2_RXD,	4,	16,	15,	2,	false)
 	MUX_CFG(DA850, UART2_TXD,	4,	20,	15,	2,	false)
@@ -576,8 +579,11 @@ static const struct mux_config da850_pins[] = {
 	MUX_CFG(DA850,	AXR_12,		1,	12,	15,	1,	false)
 	MUX_CFG(DA850,	AXR_11,		1,	16,	15,	1,	false)
 	MUX_CFG(DA850,	AXR_10,		1,	20,	15,	1,	false)
-	MUX_CFG(DA850,	AXR_9,		1,	24,	15,	1,	false)
-	MUX_CFG(DA850,	AXR_8,		1,	28,	15,	1,	false)
+// nmy modify
+	//MUX_CFG(DA850,	AXR_9,		1,	24,	15,	1,	false)
+	//MUX_CFG(DA850,	AXR_8,		1,	28,	15,	1,	false)
+	MUX_CFG(DA850,	AXR_9,		1,	24,	15,	8,	false)
+	MUX_CFG(DA850,	AXR_8,		1,	28,	15,	8,	false)
 	MUX_CFG(DA850,	AXR_7,		2,	0,	15,	1,	false)
 	MUX_CFG(DA850,	AXR_6,		2,	4,	15,	1,	false)
 	MUX_CFG(DA850,	AXR_5,		2,	8,	15,	1,	false)
@@ -677,7 +683,7 @@ static const struct mux_config da850_pins[] = {
 	MUX_CFG(DA850, GPIO2_0,     	6,  28, 15, 8,  false)
 	MUX_CFG(DA850, GPIO2_6,		6,	4,	15,	8,	false)
 	MUX_CFG(DA850, GPIO2_8,		5,	28,	15,	8,	false)
-	MUX_CFG(DA850, GPIO2_15,		5,	0,	15,	8,	false)
+	MUX_CFG(DA850, GPIO2_15,	5,	0,	15,	8,	false)
 	MUX_CFG(DA850, GPIO4_0,		10,	28,	15,	8,	false)
 	MUX_CFG(DA850, GPIO4_1,		10,	24,	15,	8,	false)
 	MUX_CFG(DA850, RTC_ALARM,	0,	28,	15,	2,	false)
@@ -778,13 +784,13 @@ static const struct mux_config da850_pins[] = {
 };
 
 const short da850_pru_suart_485_dir_pins[] __initdata = {
-	DA850_PRU0_R30_19,
+		DA850_PRU0_R30_19,
     	DA850_PRU0_R30_20,
     	DA850_PRU0_R30_23,
 };
 
 const short da850_uart0_pins[] __initdata = {
-	DA850_NUART0_CTS, DA850_NUART0_RTS, DA850_UART0_RXD, DA850_UART0_TXD,
+	/*DA850_NUART0_CTS, DA850_NUART0_RTS,*/ DA850_UART0_RXD, DA850_UART0_TXD,
 	-1
 };
 
@@ -801,8 +807,8 @@ const short da850_pru_suart_pins[] __initdata = {
    	 // nmy modify
 	DA850_AXR_0,DA850_AXR_1,DA850_AXR_2,DA850_AXR_3,DA850_AXR_4,DA850_AXR_5,DA850_AXR_6,
 	DA850_AXR_7,DA850_AXR_8,DA850_AXR_9, DA850_AXR_10,DA850_AXR_11, DA850_AXR_12,
-    	DA850_AXR_13, DA850_AXR_14, DA850_AXR_15,   
-	DA850_UART1_RXD, DA850_UART1_TXD, DA850_PRU0_R30_16,
+    	DA850_AXR_13, DA850_AXR_14, /*DA850_AXR_15,*/
+	/*DA850_UART1_RXD, DA850_UART1_TXD,*/ DA850_PRU0_R30_16,
 	// nmy modify	
 	DA850_PRU0_R30_19,
     DA850_PRU0_R30_20,
@@ -811,6 +817,7 @@ const short da850_pru_suart_pins[] __initdata = {
 	DA850_PRU0_R30_27,
 	-1
 };
+
 
 const short da850_uart1_pins[] __initdata = {
 	DA850_UART1_RXD, DA850_UART1_TXD,

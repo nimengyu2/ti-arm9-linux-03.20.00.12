@@ -1104,6 +1104,17 @@ static int __init da850_evm_config_pru_suart(void)
 		pr_warning("da850_evm_init: da850_pru_suart_pins mux setup ok: %d\n",
                 ret);
 
+	ret = gpio_request(0*16+0, "AXR8\n");
+	if (ret)
+			pr_warning("da850_evm_init: can not open GPIO %d\n",
+					0*16+0);
+	gpio_direction_input(0*16+0);
+	ret = gpio_request(0*16+1, "AXR9\n");
+	if (ret)
+			pr_warning("da850_evm_init: can not open GPIO %d\n",
+					0*16+1);
+	gpio_direction_input(0*16+1);
+
     ret = da8xx_register_pru_suart();
     if (ret)
         pr_warning("da850_evm_init: pru suart registration failed: %d\n", ret);
@@ -1112,6 +1123,7 @@ static int __init da850_evm_config_pru_suart(void)
 device_initcall(da850_evm_config_pru_suart);
 
 extern struct clk pwm1_clk;
+extern struct clk ecap_clk;
 static __init void da850_evm_init(void)
 {
 	int ret;
@@ -1168,6 +1180,15 @@ static __init void da850_evm_init(void)
 					" %d\n", ret);
 	}
 */
+	ret = da8xx_pinmux_setup(da850_uart0_pins);
+		if (ret)
+			pr_warning("da850_evm_init: uart0 mux setup failed:"
+					" %d\n", ret);
+	ret = da8xx_pinmux_setup(da850_uart1_pins);
+		if (ret)
+			pr_warning("da850_evm_init: uart1 mux setup failed:"
+					" %d\n", ret);
+
 	davinci_serial_init(&da850_evm_uart_config);
 
 	i2c_register_board_info(1, da850_evm_i2c_devices,
@@ -1322,9 +1343,29 @@ static __init void da850_evm_init(void)
     if (ret)
         pr_warning("da850_evm_init: eCAP registration failed: %d\n",
                    ret);
+	else
+	 	pr_warning("da850_evm_init: eCAP registration ok: %d\n",
+                   ret);
 
 	//  
 	clk_enable(&pwm1_clk);
+	clk_enable(&ecap_clk);
+
+	
+	ret = davinci_cfg_reg(DA850_GPIO2_15);
+	if (ret) {
+		pr_warning("%s: GPIO2_15 PinMux setup failed: %d\n",
+			   __func__, ret);
+		return;
+	}
+
+	ret = gpio_request(2*16+15, "USB1 VBUS\n");
+	if (ret) {
+		printk(KERN_ERR "%s: failed to request GPIO for GPIO2_15 PinMux port "
+		       "power control: %d\n", __func__, ret);
+		return;
+	}
+	gpio_direction_output(2*16+15, 1);
 
 }
 
