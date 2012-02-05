@@ -930,26 +930,29 @@ static da8xx_ocic_handler_t da850_evm_usb_ocic_handler;
 static int da850_evm_usb_set_power(unsigned port, int on)
 {
 	gpio_set_value(DA850_USB1_VBUS_PIN, on);
-	return 0;
+	//return 0;
 }
 
 static int da850_evm_usb_get_power(unsigned port)
 {
 	return gpio_get_value(DA850_USB1_VBUS_PIN);
+	//return 1;
 }
 
 static int da850_evm_usb_get_oci(unsigned port)
 {
 	return !gpio_get_value(DA850_USB1_OC_PIN);
+	//return !1;
 }
 
 static irqreturn_t da850_evm_usb_ocic_irq(int, void *);
 
 static int da850_evm_usb_ocic_notify(da8xx_ocic_handler_t handler)
 {
+	
 	int irq 	= gpio_to_irq(DA850_USB1_OC_PIN);
 	int error	= 0;
-
+#if 1
 	if (handler != NULL) {
 		da850_evm_usb_ocic_handler = handler;
 
@@ -961,7 +964,7 @@ static int da850_evm_usb_ocic_notify(da8xx_ocic_handler_t handler)
 			       "over-current indicator changes\n", __func__);
 	} else
 		free_irq(irq, NULL);
-
+#endif
 	return error;
 }
 
@@ -1020,6 +1023,7 @@ static __init void da850_evm_usb_init(void)
 		return;
 	}
 
+#if 1
 	ret = gpio_request(DA850_USB1_VBUS_PIN, "USB1 VBUS\n");
 	if (ret) {
 		printk(KERN_ERR "%s: failed to request GPIO for USB 1.1 port "
@@ -1035,7 +1039,7 @@ static __init void da850_evm_usb_init(void)
 		return;
 	}
 	gpio_direction_input(DA850_USB1_OC_PIN);
-
+#endif
 	ret = da8xx_register_usb11(&da850_evm_usb11_pdata);
 	if (ret)
 		pr_warning("%s: USB 1.1 registration failed: %d\n",
