@@ -1048,7 +1048,7 @@ static __init void da850_evm_usb_init(void)
 
 
 static struct davinci_i2c_platform_data da850_davinci_i2c_pdata = {
-	.bus_freq	= 100,
+	.bus_freq	= 10,
 	.bus_delay	= 0,
 };
 
