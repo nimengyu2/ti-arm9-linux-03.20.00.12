@@ -224,29 +224,41 @@ static struct platform_device *da850_evm_devices[] __initdata = {
 	&da850_evm_nandflash_device,
 	//&da850_evm_norflash_device,
 };
-#if 0
+#if 1
 static struct mtd_partition spi_flash_partitions[] = {
 	[0] = {
 		.name = "U-Boot",
 		.offset = 0,
 		.size = SZ_256K,
-		.mask_flags = MTD_WRITEABLE,
+		.mask_flags = 0,
 	},
 	[1] = {
 		.name = "U-Boot Environment",
 		.offset = MTDPART_OFS_APPEND,
 		.size = SZ_64K,
-		.mask_flags = MTD_WRITEABLE,
+		.mask_flags = 0,
 	},
 	[2] = {
-		.name = "Linux",
-		.offset = MTDPART_OFS_NXTBLK,
-		.size = SZ_8M - (SZ_256K + SZ_64K + SZ_64K),
+		.name = "kernel",
+		.offset = MTDPART_OFS_APPEND,
+		.size = SZ_2M,
 		.mask_flags = 0,
 	},
 	[3] = {
+		.name = "fs",
+		.offset = MTDPART_OFS_APPEND,
+		.size = SZ_4M,
+		.mask_flags = 0,
+	},
+	[4] = {
+		.name = "s2wifi",
+		.offset = MTDPART_OFS_APPEND,
+		.size = SZ_2M - (SZ_256K + SZ_64K + SZ_64K),
+		.mask_flags = 0,
+	},
+	[5] = {
 		.name = "MAC Address",
-		.offset = MTDPART_OFS_NXTBLK,
+		.offset = MTDPART_OFS_APPEND,
 		.size = SZ_64K,
 		.mask_flags = MTD_WRITEABLE,
 		.setup = davinci_get_mac_addr,
@@ -1131,6 +1143,7 @@ static __init void da850_evm_init(void)
 		pr_warning("da830_evm_init: watchdog registration failed: %d\n",
 				ret);
 
+#if 0
 	// 初始化nand引脚接口，并注册到内核中
 	ret = da8xx_pinmux_setup(da850_nand_pins); 
 		pr_warning("lierda_nand_pinmux %d\n", ret); 
@@ -1139,6 +1152,7 @@ static __init void da850_evm_init(void)
 		  "%d\n", ret); 
 	platform_add_devices(da850_evm_devices, 
 		  ARRAY_SIZE(da850_evm_devices)); 
+#endif
 
 /*
 	if (HAS_MMC) {
@@ -1262,7 +1276,7 @@ static __init void da850_evm_init(void)
 	if (ret)
 		pr_warning("da850_evm_init: suspend registration failed: %d\n",
 				ret);
-
+*/
 	ret = da8xx_pinmux_setup(da850_spi1_pins);
 	if (ret)
 		pr_warning("da850_evm_init: spi1 mux setup failed: %d\n",
@@ -1270,7 +1284,7 @@ static __init void da850_evm_init(void)
 
 	da850_init_spi1(BIT(0), da850_spi_board_info,
 			ARRAY_SIZE(da850_spi_board_info));
-*/
+
 	da850_evm_usb_init();
 /*
 	ret = da8xx_register_sata();
