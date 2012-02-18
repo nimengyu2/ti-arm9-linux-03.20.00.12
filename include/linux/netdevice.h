@@ -25,6 +25,9 @@
 #ifndef _LINUX_NETDEVICE_H
 #define _LINUX_NETDEVICE_H
 
+// nmy modify for wireless
+#define CONFIG_WIRELESS_EXT
+
 #include <linux/if.h>
 #include <linux/if_ether.h>
 #include <linux/if_packet.h>

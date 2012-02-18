@@ -247,13 +247,13 @@ static struct mtd_partition spi_flash_partitions[] = {
 	[3] = {
 		.name = "fs",
 		.offset = MTDPART_OFS_APPEND,
-		.size = SZ_4M,
+		.size = SZ_4M + SZ_1M,
 		.mask_flags = 0,
 	},
 	[4] = {
 		.name = "s2wifi",
 		.offset = MTDPART_OFS_APPEND,
-		.size = SZ_2M - (SZ_256K + SZ_64K + SZ_64K),
+		.size = SZ_1M - (SZ_256K + SZ_64K + SZ_64K),
 		.mask_flags = 0,
 	},
 	[5] = {
@@ -1336,6 +1336,11 @@ static __init void da850_evm_init(void)
 
 	// 开启pwm时钟
 	clk_enable(&pwm1_clk);
+
+    ret = da8xx_pinmux_setup(da850_uart0_pins);
+	if (ret)
+		pr_warning("da850_evm_init: uart0 mux setup failed: %d\n",
+				ret);
 
 }
 

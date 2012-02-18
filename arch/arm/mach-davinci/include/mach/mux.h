@@ -991,9 +991,19 @@ enum davinci_da850_index {
 
 	// nmy modify start 
 	DA850_EPWM0B,
-	DA850_GPIO8_13,
+	//DA850_GPIO8_13,
 	DA850_GPIO6_0,
 	// nmy modify end
+
+	/*
+	 * for LSD-S2WIFI_V1.0
+	 */
+	/* LED */
+	DA850_GPIO8_15,
+	DA850_GPIO8_14,
+	DA850_GPIO8_13,
+	DA850_GPIO8_12,
+	DA850_GPIO6_3, 
 
 };
 

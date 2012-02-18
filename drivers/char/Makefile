@@ -83,6 +83,11 @@ obj-$(CONFIG_DS1302)		+= ds1302.o
 obj-$(CONFIG_LSD_AM1808_FOR_SZLY_BOARD_PWM)     		+= lsd-am1808-for-szly-board-pwm.o 
 obj-$(CONFIG_LSD_AM1808_FOR_SZLY_BOARD_PWM_KERNEL)     	+= lsd-am1808-for-szly-board-pwm-kernel.o 
 obj-$(CONFIG_LSD_AM1808_FOR_SZLY_BOARD_GPIO)    		+= lsd-am1808-for-szly-board-gpio.o 
+obj-$(CONFIG_LSD_S2WIFI_V1_0_LED0) += lsd-s2wifi-led0.o
+obj-$(CONFIG_LSD_S2WIFI_V1_0_LED1) += lsd-s2wifi-led1.o
+obj-$(CONFIG_LSD_S2WIFI_V1_0_LED2) += lsd-s2wifi-led2.o
+obj-$(CONFIG_LSD_S2WIFI_V1_0_LED3) += lsd-s2wifi-led3.o
+obj-$(CONFIG_LSD_S2WIFI_V1_0_LED4) += lsd-s2wifi-led4.o
 # nmy modify end
 
 obj-$(CONFIG_XILINX_HWICAP)	+= xilinx_hwicap/
