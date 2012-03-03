@@ -876,7 +876,7 @@ const short da850_lcdcntl_pins[] __initdata = {
 const short da850_mmcsd0_pins[] __initdata = {
 	DA850_MMCSD0_DAT_0, DA850_MMCSD0_DAT_1, DA850_MMCSD0_DAT_2,
 	DA850_MMCSD0_DAT_3, DA850_MMCSD0_CLK, DA850_MMCSD0_CMD,
-	DA850_GPIO4_0, DA850_GPIO4_1,
+	/*DA850_GPIO4_0, DA850_GPIO4_1,*/
 	-1
 };
 

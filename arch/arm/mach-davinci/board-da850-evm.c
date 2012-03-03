@@ -613,15 +613,18 @@ static struct davinci_mcbsp_platform_data da850_mcbsp0_config = {
 static struct davinci_mcbsp_platform_data da850_mcbsp1_config = {
 	.inst	= 1,
 };
+#endif
 
 static int da850_evm_mmc_get_ro(int index)
 {
-	return gpio_get_value(DA850_MMCSD_WP_PIN);
+	//return gpio_get_value(DA850_MMCSD_WP_PIN);
+	return 0;
 }
 
 static int da850_evm_mmc_get_cd(int index)
 {
-	return !gpio_get_value(DA850_MMCSD_CD_PIN);
+	//return !gpio_get_value(DA850_MMCSD_CD_PIN);
+	return 1;
 }
 
 static struct davinci_mmc_config da850_mmc_config = {
@@ -632,7 +635,7 @@ static struct davinci_mmc_config da850_mmc_config = {
 	.caps		= MMC_CAP_MMC_HIGHSPEED | MMC_CAP_SD_HIGHSPEED,
 	.version	= MMC_CTLR_VERSION_2,
 };
-
+#if 0
 static void da850_panel_power_ctrl(int val)
 {
 	/* lcd power */
@@ -1179,6 +1182,29 @@ static __init void da850_evm_init(void)
 					" %d\n", ret);
 	}
 */
+
+	ret = da8xx_pinmux_setup(da850_mmcsd0_pins);
+	if (ret)
+		pr_warning("da850_evm_init: mmcsd0 mux setup failed:"
+				" %d\n", ret);
+#if 0
+	ret = gpio_request(DA850_MMCSD_CD_PIN, "MMC CD\n");
+	if (ret)
+		pr_warning("da850_evm_init: can not open GPIO %d\n",
+				DA850_MMCSD_CD_PIN);
+	gpio_direction_input(DA850_MMCSD_CD_PIN);
+
+	ret = gpio_request(DA850_MMCSD_WP_PIN, "MMC WP\n");
+	if (ret)
+		pr_warning("da850_evm_init: can not open GPIO %d\n",
+				DA850_MMCSD_WP_PIN);
+	gpio_direction_input(DA850_MMCSD_WP_PIN);
+#endif
+	ret = da8xx_register_mmcsd0(&da850_mmc_config);
+	if (ret)
+		pr_warning("da850_evm_init: mmcsd0 registration failed:"
+				" %d\n", ret);
+
 	davinci_serial_init(&da850_evm_uart_config);
 
 	i2c_register_board_info(1, da850_evm_i2c_devices,
