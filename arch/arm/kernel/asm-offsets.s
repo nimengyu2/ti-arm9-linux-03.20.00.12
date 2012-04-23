@@ -11,9 +11,10 @@
 	.file	"asm-offsets.c"
 @ GNU C (Sourcery G++ Lite 2009q1-203) version 4.3.3 (arm-none-linux-gnueabi)
 @	compiled by GNU C version 4.3.2, GMP version 4.2.4, MPFR version 2.3.2.
-@ GGC heuristics: --param ggc-min-expand=46 --param ggc-min-heapsize=31305
-@ options passed:  -nostdinc -I/am1808/linux-03.20.00.12/arch/arm/include
-@ -Iinclude -Iarch/arm/mach-davinci/include -iprefix
+@ GGC heuristics: --param ggc-min-expand=63 --param ggc-min-heapsize=63632
+@ options passed:  -nostdinc
+@ -I/linux-sdk/am1808-linux-03.20.00.12/arch/arm/include -Iinclude
+@ -Iarch/arm/mach-davinci/include -iprefix
 @ /root/CodeSourcery/Sourcery_G++_Lite/bin/../lib/gcc/arm-none-linux-gnueabi/4.3.3/
 @ -isysroot
 @ /root/CodeSourcery/Sourcery_G++_Lite/bin/../arm-none-linux-gnueabi/libc
