@@ -166,7 +166,9 @@ struct mtd_partition da850_evm_nandflash_partition[] = {
 		.mask_flags	= 0,
 	},
 	{
-		.name		= "filesystem",
+		// nmy modify
+		//.name		= "filesystem",
+		.name		= "rootfs",
 		.offset		= MTDPART_OFS_APPEND,
 		.size		= MTDPART_SIZ_FULL,
 		.mask_flags	= 0,
@@ -187,7 +189,9 @@ static struct davinci_nand_pdata da850_evm_nandflash_data = {
 	.parts		= da850_evm_nandflash_partition,
 	.nr_parts	= ARRAY_SIZE(da850_evm_nandflash_partition),
 	.ecc_mode	= NAND_ECC_HW,
-	.ecc_bits	= 4,
+	// nmy modify 
+	//.ecc_bits	= 4,
+	.ecc_bits	= 1,
 	.options	= NAND_USE_FLASH_BBT,
 	.timing		= &da850_evm_nandflash_timing,
 };
@@ -219,6 +223,12 @@ static struct platform_device *da850_evm_devices[] __initdata = {
 	&da850_evm_nandflash_device,
 	&da850_evm_norflash_device,
 };
+
+// Modify by toby.zhang @2011.01.10 
+// add nand device 
+static struct platform_device *lsd_am1808_devices[] __initdata = { 
+  &da850_evm_nandflash_device,   
+}; 
 
 static struct mtd_partition spi_flash_partitions[] = {
 	[0] = {
@@ -1110,6 +1120,7 @@ static __init void da850_evm_init(void)
 		pr_warning("da830_evm_init: watchdog registration failed: %d\n",
 				ret);
 
+#if 0
 	if (HAS_MMC) {
 		ret = da8xx_pinmux_setup(da850_mmcsd0_pins);
 		if (ret)
@@ -1133,7 +1144,17 @@ static __init void da850_evm_init(void)
 			pr_warning("da850_evm_init: mmcsd0 registration failed:"
 					" %d\n", ret);
 	}
+#endif
+ 
+	ret = da8xx_pinmux_setup(da850_nand_pins); 
+		pr_warning("lierda_nand_pinmux %d\n", ret); 
+	if (ret) 
+		pr_warning("da850_evm_init: nand mux setup failed: " 
+			"%d\n", ret); 
+	platform_add_devices(lsd_am1808_devices, 
+		ARRAY_SIZE(lsd_am1808_devices)); 
 
+	
 	davinci_serial_init(&da850_evm_uart_config);
 
 	i2c_register_board_info(1, da850_evm_i2c_devices,
@@ -1147,6 +1168,7 @@ static __init void da850_evm_init(void)
 //	__raw_writel(0, IO_ADDRESS(DA8XX_UART1_BASE) + 0x30);
 //	__raw_writel(0, IO_ADDRESS(DA8XX_UART0_BASE) + 0x30);
 
+#if 0
 	if (HAS_MCBSP0) {
 		if (HAS_EMAC)
 			pr_warning("WARNING: both MCBSP0 and EMAC are "
@@ -1215,6 +1237,7 @@ static __init void da850_evm_init(void)
 	ret = da8xx_register_rtc();
 	if (ret)
 		pr_warning("da850_evm_init: rtc setup failed: %d\n", ret);
+#endif
 
 	ret = da850_register_cpufreq();
 	if (ret)
@@ -1226,6 +1249,7 @@ static __init void da850_evm_init(void)
 		pr_warning("da850_evm_init: cpuidle registration failed: %d\n",
 				ret);
 
+#if 0
 	ret = da850_register_pm(&da850_pm_device);
 	if (ret)
 		pr_warning("da850_evm_init: suspend registration failed: %d\n",
@@ -1238,6 +1262,7 @@ static __init void da850_evm_init(void)
 
 	da850_init_spi1(BIT(0), da850_spi_board_info,
 			ARRAY_SIZE(da850_spi_board_info));
+#endif
 
 	da850_evm_usb_init();
 
