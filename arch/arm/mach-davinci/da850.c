@@ -28,6 +28,7 @@
 #include <mach/da8xx.h>
 #include <mach/cpufreq.h>
 #include <mach/pm.h>
+#include <linux/delay.h>
 
 #include "clock.h"
 #include "mux.h"
@@ -1218,12 +1219,14 @@ static int da850_set_voltage(unsigned int index)
 
 static int da850_regulator_init(void)
 {
+// nmy add
+#if 0
 	cvdd = regulator_get(NULL, "cvdd");
 	if (WARN(IS_ERR(cvdd), "Unable to obtain voltage regulator for CVDD;"
 					" voltage scaling unsupported\n")) {
 		return PTR_ERR(cvdd);
 	}
-
+#endif
 	return 0;
 }
 #endif
@@ -1318,9 +1321,12 @@ int da850_register_pm(struct platform_device *pdev)
 	int ret;
 	struct davinci_pm_config *pdata = pdev->dev.platform_data;
 
+	printk("AAAAAAAA debug: enter func=%s,line=%d\n",__FUNCTION__,__LINE__);
 	ret = davinci_cfg_reg(DA850_RTC_ALARM);
 	if (ret)
 		return ret;
+	printk("AAAAAAAA debug: enter func=%s,line=%d\n",__FUNCTION__,__LINE__);
+	mdelay(10);
 
 	pdata->ddr2_ctlr_base = da8xx_get_mem_ctlr();
 	pdata->deepsleep_reg = DA8XX_SYSCFG1_VIRT(DA8XX_DEEPSLEEP_REG);
@@ -1341,7 +1347,7 @@ int da850_register_pm(struct platform_device *pdev)
 		ret = -ENOMEM;
 		goto no_ddrpsc_mem;
 	}
-
+	printk("AAAAAAAA debug: enter func=%s,line=%d\n",__FUNCTION__,__LINE__);
 	return platform_device_register(pdev);
 
 no_ddrpsc_mem:

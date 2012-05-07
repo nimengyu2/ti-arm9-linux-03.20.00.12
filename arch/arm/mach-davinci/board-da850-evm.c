@@ -730,6 +730,7 @@ static const short da850_evm_lcdc_pins[] = {
 
 static int __init da850_evm_config_emac(void)
 {
+#if 0
 	void __iomem *cfg_chip3_base;
 	int ret;
 	u32 val;
@@ -784,7 +785,7 @@ static int __init da850_evm_config_emac(void)
 	if (ret)
 		pr_warning("da850_evm_init: emac registration failed: %d\n",
 				ret);
-
+#endif
 	return 0;
 }
 device_initcall(da850_evm_config_emac);
@@ -1289,12 +1290,12 @@ static __init void da850_evm_init(void)
 		pr_warning("da850_evm_init: cpuidle registration failed: %d\n",
 				ret);
 
-#if 0
+
 	ret = da850_register_pm(&da850_pm_device);
 	if (ret)
 		pr_warning("da850_evm_init: suspend registration failed: %d\n",
 				ret);
-
+#if 0
 	ret = da8xx_pinmux_setup(da850_spi1_pins);
 	if (ret)
 		pr_warning("da850_evm_init: spi1 mux setup failed: %d\n",

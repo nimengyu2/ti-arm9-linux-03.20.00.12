@@ -14,6 +14,7 @@
 #include <linux/platform_device.h>
 #include <linux/clk.h>
 #include <linux/spinlock.h>
+#include <linux/delay.h>
 
 #include <asm/cacheflush.h>
 #include <asm/delay.h>
@@ -39,6 +40,8 @@ static void davinci_pm_suspend(void)
 {
 	unsigned val;
 
+	printk("AAAAAAAA debug: enter func=%s,line=%d\n",__FUNCTION__,__LINE__);
+	mdelay(10);
 	if (pdata->cpupll_reg_base != pdata->ddrpll_reg_base) {
 
 		/* Switch CPU PLL to bypass mode */
@@ -97,7 +100,7 @@ static void davinci_pm_suspend(void)
 static int davinci_pm_enter(suspend_state_t state)
 {
 	int ret = 0;
-
+	printk("AAAAAAAA debug: enter func=%s,line=%d\n",__FUNCTION__,__LINE__);
 	switch (state) {
 	case PM_SUSPEND_STANDBY:
 	case PM_SUSPEND_MEM:
@@ -117,6 +120,7 @@ static struct platform_suspend_ops davinci_pm_ops = {
 
 static int __init davinci_pm_probe(struct platform_device *pdev)
 {
+	printk("AAAAAAAA debug: enter func=%s,line=%d\n",__FUNCTION__,__LINE__);	
 	pdata = pdev->dev.platform_data;
 	if (!pdata) {
 		dev_err(&pdev->dev, "cannot get platform data\n");
@@ -133,6 +137,7 @@ static int __init davinci_pm_probe(struct platform_device *pdev)
 						davinci_cpu_suspend_sz);
 
 	suspend_set_ops(&davinci_pm_ops);
+	printk("AAAAAAAA debug: enter func=%s,line=%d\n",__FUNCTION__,__LINE__);
 
 	return 0;
 }
@@ -140,6 +145,7 @@ static int __init davinci_pm_probe(struct platform_device *pdev)
 static int __exit davinci_pm_remove(struct platform_device *pdev)
 {
 	sram_free(davinci_sram_suspend, davinci_cpu_suspend_sz);
+	printk("AAAAAAAA debug: enter func=%s,line=%d\n",__FUNCTION__,__LINE__);
 	return 0;
 }
 
