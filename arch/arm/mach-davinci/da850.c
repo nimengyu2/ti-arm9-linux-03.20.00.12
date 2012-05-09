@@ -719,8 +719,12 @@ static const struct mux_config da850_pins[] = {
 	// EPWM0B
 	MUX_CFG(DA850,EPWM0B,		3,	4,	15,	2,	false)
 	// nmy modify end at 20111027 14:23
+
+	MUX_CFG(DA850, GPIO0_0,    1, 28, 15, 8,  false)
+
 #endif
 };
+
 
 const short da850_uart0_pins[] __initdata = {
 	DA850_NUART0_CTS, DA850_NUART0_RTS, DA850_UART0_RXD, DA850_UART0_TXD,
@@ -792,7 +796,7 @@ const short da850_nand_pins[] __initdata = {
 	DA850_EMA_D_7, DA850_EMA_D_6, DA850_EMA_D_5, DA850_EMA_D_4,
 	DA850_EMA_D_3, DA850_EMA_D_2, DA850_EMA_D_1, DA850_EMA_D_0,
 	DA850_EMA_A_1, DA850_EMA_A_2, DA850_NEMA_CS_3, DA850_NEMA_CS_4,
-	DA850_NEMA_WE, DA850_NEMA_OE,
+	DA850_NEMA_WE, DA850_NEMA_OE, /*DA850_GPIO0_0,*/
 	-1
 };
 

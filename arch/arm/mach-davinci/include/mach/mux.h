@@ -986,6 +986,8 @@ enum davinci_da850_index {
 	DA850_GPIO8_13,
 	DA850_GPIO8_12,
 	DA850_EPWM0B,
+
+	DA850_GPIO0_0,
 	// nmy modify end at 20111027 14:21
 };
 

@@ -730,7 +730,7 @@ static const short da850_evm_lcdc_pins[] = {
 
 static int __init da850_evm_config_emac(void)
 {
-#if 0
+#if 1
 	void __iomem *cfg_chip3_base;
 	int ret;
 	u32 val;
@@ -1133,14 +1133,14 @@ static __init void da850_evm_init(void)
 	//----------------------------------------------------------------------------//
 	// nmy    修改关于uart0 1 的使用方法  start   2011-02-11  14:00
 	//----------------------------------------------------------------------------//
-
+#if 0
 	ret = da8xx_pinmux_setup(da850_i2c0_pins);
 	if (ret)
 		pr_warning("da850_evm_init: i2c0 mux setup failed: %d\n",
 				ret);
 
 	platform_device_register(&da850_gpio_i2c);
-
+#endif
 	ret = da8xx_register_watchdog();
 	if (ret)
 		pr_warning("da830_evm_init: watchdog registration failed: %d\n",
@@ -1171,6 +1171,7 @@ static __init void da850_evm_init(void)
 	}
 
 	davinci_serial_init(&da850_evm_uart_config);
+#if 0
 	//----------------------------------------------------------------------------// 
 	// nmy    修改关于tsc2007  触摸屏芯片的使用      start      2010-12-10    14:00 
 	//----------------------------------------------------------------------------// 
@@ -1183,6 +1184,7 @@ static __init void da850_evm_init(void)
 
 	i2c_register_board_info(1, da850_evm_i2c_devices,
 			ARRAY_SIZE(da850_evm_i2c_devices));
+#endif
 	
 	if (HAS_MMC) { 
   		ret = da8xx_pinmux_setup(da850_nand_pins); 
@@ -1193,8 +1195,21 @@ static __init void da850_evm_init(void)
   		platform_add_devices(lsd_am1808_devices, 
         		ARRAY_SIZE(lsd_am1808_devices)); 
 	} 
- 
 
+#if 0
+	ret = gpio_request(0*16+0, "GPIO0[0]");
+	if (ret) {
+		printk(KERN_ERR "%s: failed to request GPIO for USB 1.1 port "
+		       "over-current indicator: %d\n", __func__, ret);
+	}
+	else
+	{
+		gpio_direction_output(0*16+0,0);
+		pr_warning("lierda_gpio init ok\n");
+	}
+#endif
+	
+ 
 	/*
 	 * shut down uart 0 and 1; they are not used on the board and
 	 * accessing them causes endless "too much work in irq53" messages
@@ -1202,7 +1217,7 @@ static __init void da850_evm_init(void)
 	 */
 	//__raw_writel(0, IO_ADDRESS(DA8XX_UART1_BASE) + 0x30);
 	//__raw_writel(0, IO_ADDRESS(DA8XX_UART0_BASE) + 0x30);
-
+#if 0
 	if (HAS_MCBSP0) {
 		if (HAS_EMAC)
 			pr_warning("WARNING: both MCBSP0 and EMAC are "
@@ -1246,6 +1261,7 @@ static __init void da850_evm_init(void)
 		da8xx_register_mcasp(0, &da850_evm_snd_data);
 	}
 
+
 	ret = da8xx_pinmux_setup(da850_lcdcntl_pins);
 	if (ret)
 		pr_warning("da850_evm_init: lcdcntl mux setup failed: %d\n",
@@ -1261,13 +1277,13 @@ static __init void da850_evm_init(void)
 	if (ret)
 		pr_warning("da850_evm_init: lcd initialization failed: %d\n",
 				ret);
-#if 0
+
 	sharp_lk043t1dg01_pdata.panel_power_ctrl = da850_panel_power_ctrl,
 	ret = da8xx_register_lcdc(&sharp_lk043t1dg01_pdata);
 	if (ret)
 		pr_warning("da850_evm_init: lcdc registration failed: %d\n",
 				ret);
-#endif
+
 	// modify by toby.zhang @2010.12.05 
 	// change sharp_lk043t1dg01_pdata to topway_lmt070dicfwd_pdata 
 	topway_lmt070dicfwd_pdata.panel_power_ctrl = da850_panel_power_ctrl, 
@@ -1275,7 +1291,9 @@ static __init void da850_evm_init(void)
 	if (ret) 
     	pr_warning("da850_evm_init: lcdc registration failed: %d\n", 
         ret); 
+#endif
 
+#if 0
 	ret = da8xx_register_rtc();
 	if (ret)
 		pr_warning("da850_evm_init: rtc setup failed: %d\n", ret);
@@ -1295,6 +1313,7 @@ static __init void da850_evm_init(void)
 	if (ret)
 		pr_warning("da850_evm_init: suspend registration failed: %d\n",
 				ret);
+#endif
 #if 0
 	ret = da8xx_pinmux_setup(da850_spi1_pins);
 	if (ret)
