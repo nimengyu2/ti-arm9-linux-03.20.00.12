@@ -65,6 +65,11 @@ config LSD_TESTAM808_01B_V1_160160_LCD
 	 tristate "test bus driver for LSD_TESTAM808_01B_V1 boards" 
     help 
           this is test bus driver for LSD_TESTAM808_01B_V1 boards
+config LSD_TESTAM808_01B_V1_SATA
+	 tristate "test sata driver for LSD_TESTAM808_01B_V1 boards" 
+    help 
+          this is test sata driver for LSD_TESTAM808_01B_V1 boards 
+
 # nmy modify end at 20111027 14:26
 
 

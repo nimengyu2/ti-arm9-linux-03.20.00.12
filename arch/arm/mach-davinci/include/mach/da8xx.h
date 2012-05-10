@@ -161,7 +161,8 @@ int __init da850_register_vpif_capture(struct vpif_capture_config
 							*capture_config);
 
 int cppi41_init(void);
-int da8xx_register_sata(void);
+extern int da8xx_register_sata(void);
+extern int da8xx_register_sata_lsd(void);
 
 
 extern struct platform_device da8xx_serial_device;

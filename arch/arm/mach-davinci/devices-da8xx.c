@@ -978,6 +978,11 @@ int __init da8xx_register_sata(void)
 	return platform_device_register(&da850_ahci_device);
 }
 
+int da8xx_register_sata_lsd(void)
+{
+	return platform_device_register(&da850_ahci_device);
+}
+
 #define CFGCHIP2	DA8XX_SYSCFG0_VIRT(DA8XX_CFGCHIP2_REG)
 /*
  * Configure the USB PHY for DA8xx platforms.

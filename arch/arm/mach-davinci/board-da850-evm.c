@@ -1145,7 +1145,7 @@ static __init void da850_evm_init(void)
 	if (ret)
 		pr_warning("da830_evm_init: watchdog registration failed: %d\n",
 				ret);
-
+#if 0
 	if (HAS_MMC) {
 		ret = da8xx_pinmux_setup(da850_mmcsd0_pins);
 		if (ret)
@@ -1169,6 +1169,7 @@ static __init void da850_evm_init(void)
 			pr_warning("da850_evm_init: mmcsd0 registration failed:"
 					" %d\n", ret);
 	}
+#endif
 
 	davinci_serial_init(&da850_evm_uart_config);
 #if 0
@@ -1324,6 +1325,7 @@ static __init void da850_evm_init(void)
 			ARRAY_SIZE(da850_spi_board_info));
 #endif 
 	da850_evm_usb_init();
+
 #if 0
 	ret = da8xx_register_sata();
 	if (ret)
