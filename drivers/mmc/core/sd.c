@@ -461,7 +461,7 @@ static int mmc_sd_init_card(struct mmc_host *host, u32 ocr,
 	}
 
 // nmy modify
-#if 1
+#if 0
 	/*
 	 * Attempt to change to high-speed (if supported)
 	 */

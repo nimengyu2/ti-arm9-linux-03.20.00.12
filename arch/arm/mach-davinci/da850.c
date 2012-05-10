@@ -854,7 +854,7 @@ const short da850_vpif_display_pins[] __initdata = {
 };
 
 const short da850_evm_usb11_pins[] __initdata = {
-	DA850_GPIO2_4, DA850_GPIO6_13, -1
+	/*DA850_GPIO2_4, DA850_GPIO6_13,*/ -1
 };
 
 const short da850_sata_pins[] __initdata = {

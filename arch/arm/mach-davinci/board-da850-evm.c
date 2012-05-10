@@ -763,6 +763,7 @@ static int __init da850_evm_config_emac(void)
 	/* configure the CFGCHIP3 register for RMII or MII */
 	__raw_writel(val, cfg_chip3_base);
 
+#if 0
 	ret = davinci_cfg_reg(DA850_GPIO2_6);
 	if (ret)
 		pr_warning("da850_evm_init:GPIO(2,6) mux setup "
@@ -777,6 +778,7 @@ static int __init da850_evm_config_emac(void)
 
 	/* Enable/Disable MII MDIO clock */
 	gpio_direction_output(DA850_MII_MDIO_CLKEN_PIN, rmii_en);
+#endif
 
 	soc_info->emac_pdata->phy_mask = DA850_EVM_PHY_MASK;
 	soc_info->emac_pdata->mdio_max_freq = DA850_EVM_MDIO_FREQUENCY;
@@ -983,27 +985,29 @@ static da8xx_ocic_handler_t da850_evm_usb_ocic_handler;
 
 static int da850_evm_usb_set_power(unsigned port, int on)
 {
-	gpio_set_value(DA850_USB1_VBUS_PIN, on);
+	//gpio_set_value(DA850_USB1_VBUS_PIN, on);
 	return 0;
 }
 
 static int da850_evm_usb_get_power(unsigned port)
 {
-	return gpio_get_value(DA850_USB1_VBUS_PIN);
+	//return gpio_get_value(DA850_USB1_VBUS_PIN);
+	return 1;
 }
 
 static int da850_evm_usb_get_oci(unsigned port)
 {
-	return !gpio_get_value(DA850_USB1_OC_PIN);
+	//return !gpio_get_value(DA850_USB1_OC_PIN);
+	return 1;
 }
 
 static irqreturn_t da850_evm_usb_ocic_irq(int, void *);
 
 static int da850_evm_usb_ocic_notify(da8xx_ocic_handler_t handler)
 {
-	int irq 	= gpio_to_irq(DA850_USB1_OC_PIN);
+	//int irq 	= gpio_to_irq(DA850_USB1_OC_PIN);
 	int error	= 0;
-
+#if 0
 	if (handler != NULL) {
 		da850_evm_usb_ocic_handler = handler;
 
@@ -1015,6 +1019,7 @@ static int da850_evm_usb_ocic_notify(da8xx_ocic_handler_t handler)
 			       "over-current indicator changes\n", __func__);
 	} else
 		free_irq(irq, NULL);
+#endif
 
 	return error;
 }
@@ -1067,6 +1072,7 @@ static __init void da850_evm_usb_init(void)
 
 	da8xx_usb20_configure(usb_evm_data, ARRAY_SIZE(usb_evm_data));
 
+#if 0
 	ret = da8xx_pinmux_setup(da850_evm_usb11_pins);
 	if (ret) {
 		pr_warning("%s: USB 1.1 PinMux setup failed: %d\n",
@@ -1089,6 +1095,7 @@ static __init void da850_evm_usb_init(void)
 		return;
 	}
 	gpio_direction_input(DA850_USB1_OC_PIN);
+#endif
 
 	ret = da8xx_register_usb11(&da850_evm_usb11_pdata);
 	if (ret)
@@ -1145,7 +1152,7 @@ static __init void da850_evm_init(void)
 	if (ret)
 		pr_warning("da830_evm_init: watchdog registration failed: %d\n",
 				ret);
-#if 0
+#if 1
 	if (HAS_MMC) {
 		ret = da8xx_pinmux_setup(da850_mmcsd0_pins);
 		if (ret)
@@ -1326,12 +1333,12 @@ static __init void da850_evm_init(void)
 #endif 
 	da850_evm_usb_init();
 
-#if 0
+
 	ret = da8xx_register_sata();
 	if (ret)
 		pr_warning("da850_evm_init: SATA registration failed: %d\n",
 						ret);
-
+#if 0
 	if (HAS_VPIF_DISPLAY || HAS_VPIF_CAPTURE) {
 		ret = da850_register_vpif();
 		if (ret)
