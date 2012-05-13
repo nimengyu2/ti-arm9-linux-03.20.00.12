@@ -34,8 +34,11 @@
 #include <sound/initval.h>
 
 #include "tlv320aic23.h"
+#include "linux/lierda_debug.h"
 
 #define AIC23_VERSION "0.1"
+
+
 
 /*
  * AIC23 register cache
@@ -660,6 +663,10 @@ static int tlv320aic23_init(struct snd_soc_device *socdev)
 	    kmemdup(tlv320aic23_reg, sizeof(tlv320aic23_reg), GFP_KERNEL);
 	if (codec->reg_cache == NULL)
 		return -ENOMEM;
+	#if (M_AM1808_AUDIO_DEBUG >= 1)
+	else	
+		printk("DDDDDD:file=%s,func=%s,line=%d\n",__FILE__,__FUNCTION__,__LINE__);
+	#endif
 
 	/* Reset codec */
 	tlv320aic23_write(codec, TLV320AIC23_RESET, 0);
@@ -670,6 +677,10 @@ static int tlv320aic23_init(struct snd_soc_device *socdev)
 		printk(KERN_ERR "tlv320aic23: failed to create pcms\n");
 		goto pcm_err;
 	}
+	#if (M_AM1808_AUDIO_DEBUG >= 1)
+	else	
+		printk("DDDDDD:file=%s,func=%s,line=%d\n",__FILE__,__FUNCTION__,__LINE__);
+	#endif
 
 	/* power on device */
 	tlv320aic23_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
@@ -737,6 +748,10 @@ static int tlv320aic23_codec_probe(struct i2c_client *i2c,
 		printk(KERN_ERR "tlv320aic23: failed to initialise AIC23\n");
 		goto err;
 	}
+	#if (M_AM1808_AUDIO_DEBUG >= 1)
+	else	
+		printk("DDDDDD:file=%s,func=%s,line=%d\n",__FILE__,__FUNCTION__,__LINE__);
+	#endif
 	return ret;
 
 err:
@@ -776,10 +791,17 @@ static int tlv320aic23_probe(struct platform_device *pdev)
 	int ret = 0;
 
 	printk(KERN_INFO "AIC23 Audio Codec %s\n", AIC23_VERSION);
+	#if (M_AM1808_AUDIO_DEBUG >= 1)
+	printk("AIC23 Audio Codec %s\n", AIC23_VERSION);
+	#endif
 
 	aic23 = kzalloc(sizeof(struct aic23), GFP_KERNEL);
 	if (aic23 == NULL)
 		return -ENOMEM;
+	#if (M_AM1808_AUDIO_DEBUG >= 1)
+	else	
+		printk("DDDDDD:file=%s,func=%s,line=%d\n",__FILE__,__FUNCTION__,__LINE__);
+	#endif
 	codec = &aic23->codec;
 	socdev->card->codec = codec;
 	mutex_init(&codec->mutex);
@@ -793,6 +815,10 @@ static int tlv320aic23_probe(struct platform_device *pdev)
 	ret = i2c_add_driver(&tlv320aic23_i2c_driver);
 	if (ret != 0)
 		printk(KERN_ERR "can't add i2c driver");
+	#if (M_AM1808_AUDIO_DEBUG >= 1)
+	else	
+		printk("DDDDDD:file=%s,func=%s,line=%d\n",__FILE__,__FUNCTION__,__LINE__);
+	#endif
 #endif
 	return ret;
 }

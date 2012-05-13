@@ -27,6 +27,7 @@
 #include <linux/pm.h>
 #include <linux/bitops.h>
 #include <linux/debugfs.h>
+#define DEBUG 1
 #include <linux/platform_device.h>
 #include <sound/ac97_codec.h>
 #include <sound/core.h>
@@ -35,6 +36,9 @@
 #include <sound/soc.h>
 #include <sound/soc-dapm.h>
 #include <sound/initval.h>
+
+#include <linux/lierda_debug.h>
+
 
 static DEFINE_MUTEX(pcm_mutex);
 static DECLARE_WAIT_QUEUE_HEAD(soc_pm_waitq);
@@ -976,7 +980,14 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
 	int i, found, ret, ac97;
 
 	if (card->instantiated)
+	{
+		lsd_audio_dbg(LSD_DBG,"card->instantiated==1\n");		
 		return;
+	}
+	else
+	{
+		lsd_audio_dbg(LSD_DBG,"card->instantiated==0\n");	
+	}
 
 	found = 0;
 	list_for_each_entry(platform, &platform_list, list)
@@ -987,9 +998,14 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
 	if (!found) {
 		dev_dbg(card->dev, "Platform %s not registered\n",
 			card->platform->name);
+		lsd_audio_dbg(LSD_ERR, "Platform %s not registered\n",
+			card->platform->name);
 		return;
 	}
-
+	else
+	{
+		lsd_audio_dbg(LSD_OK,"Platform success registered\n");
+	}
 	ac97 = 0;
 	for (i = 0; i < card->num_links; i++) {
 		found = 0;
@@ -1001,7 +1017,14 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
 		if (!found) {
 			dev_dbg(card->dev, "DAI %s not registered\n",
 				card->dai_link[i].cpu_dai->name);
+			lsd_audio_dbg(LSD_ERR, "DAI %s not registered\n",
+				card->dai_link[i].cpu_dai->name);
 			return;
+		}
+		else
+		{
+			lsd_audio_dbg(LSD_OK, "DAI %s is registered\n",
+				card->dai_link[i].cpu_dai->name);
 		}
 
 		if (card->dai_link[i].cpu_dai->ac97_control)
@@ -1030,7 +1053,14 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
 			if (!found) {
 				dev_dbg(card->dev, "DAI %s not registered\n",
 					card->dai_link[i].codec_dai->name);
+				lsd_audio_dbg(LSD_ERR, "DAI %s not registered\n",
+					card->dai_link[i].cpu_dai->name);
 				return;
+			}
+			else
+			{
+				lsd_audio_dbg(LSD_OK, "DAI %s is registered\n",
+					card->dai_link[i].cpu_dai->name);
 			}
 		}
 
@@ -1099,7 +1129,14 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
 	if (ret < 0) {
 		printk(KERN_ERR "asoc: failed to register soundcard for %s\n",
 				codec->name);
+		lsd_audio_dbg(LSD_ERR, "asoc: failed to register soundcard for %s\n",
+				codec->name);
 		goto card_err;
+	}
+	else
+	{
+		lsd_audio_dbg(LSD_OK, "asoc: success to register soundcard for %s\n",
+				codec->name);
 	}
 
 	mutex_lock(&codec->mutex);
@@ -1159,6 +1196,7 @@ cpu_dai_err:
 static void snd_soc_instantiate_cards(void)
 {
 	struct snd_soc_card *card;
+	lsd_audio_dbg(LSD_DBG,"at first of snd_soc_instantiate_cards\n");
 	list_for_each_entry(card, &card_list, list)
 		snd_soc_instantiate_card(card);
 }
@@ -1170,6 +1208,7 @@ static int soc_probe(struct platform_device *pdev)
 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
 	struct snd_soc_card *card = socdev->card;
 
+	lsd_audio_dbg(LSD_DBG,"at first of soc_probe\n");
 	/* Bodge while we push things out of socdev */
 	card->socdev = socdev;
 
@@ -1178,7 +1217,12 @@ static int soc_probe(struct platform_device *pdev)
 	ret = snd_soc_register_card(card);
 	if (ret != 0) {
 		dev_err(&pdev->dev, "Failed to register card\n");
+		lsd_audio_dbg(LSD_ERR,"Failed to register card\n");
 		return ret;
+	}
+	else
+	{
+		lsd_audio_dbg(LSD_OK,"ok to register card\n");
 	}
 
 	return 0;
@@ -2312,7 +2356,12 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_digital_mute);
 static int snd_soc_register_card(struct snd_soc_card *card)
 {
 	if (!card->name || !card->dev)
+	{
+		lsd_audio_dbg(LSD_ERR, "card->name and card->dev is not ok\n");		
 		return -EINVAL;
+	}	
+	else
+		lsd_audio_dbg(LSD_OK, "card->name and card->dev is ok\n");
 
 	INIT_LIST_HEAD(&card->list);
 	card->instantiated = 0;
@@ -2323,6 +2372,7 @@ static int snd_soc_register_card(struct snd_soc_card *card)
 	mutex_unlock(&client_mutex);
 
 	dev_dbg(card->dev, "Registered card '%s'\n", card->name);
+	lsd_audio_dbg(LSD_OK, "Registered card '%s'\n", card->name);
 
 	return 0;
 }
@@ -2359,7 +2409,14 @@ int snd_soc_register_dai(struct snd_soc_dai *dai)
 
 	/* The device should become mandatory over time */
 	if (!dai->dev)
+	{
 		printk(KERN_WARNING "No device for DAI %s\n", dai->name);
+		lsd_audio_dbg(LSD_ERR,"No device for DAI %s\n", dai->name);
+	}	
+	else
+	{
+		lsd_audio_dbg(LSD_OK,"have device for DAI %s\n", dai->name);
+	}
 
 	if (!dai->ops)
 		dai->ops = &null_dai_ops;
@@ -2518,8 +2575,14 @@ int snd_soc_register_codec(struct snd_soc_codec *codec)
 
 	/* The device should become mandatory over time */
 	if (!codec->dev)
+	{
 		printk(KERN_WARNING "No device for codec %s\n", codec->name);
-
+		lsd_audio_dbg(LSD_ERR,"no device for codec %s\n", codec->name);
+	}
+	else
+	{
+		lsd_audio_dbg(LSD_OK,"have device for codec %s\n", codec->name);
+	}
 	INIT_LIST_HEAD(&codec->list);
 
 	for (i = 0; i < codec->num_dai; i++) {
@@ -2533,6 +2596,7 @@ int snd_soc_register_codec(struct snd_soc_codec *codec)
 	mutex_unlock(&client_mutex);
 
 	pr_debug("Registered codec '%s'\n", codec->name);
+	lsd_audio_dbg(LSD_OK,"Registered codec '%s'\n", codec->name);
 
 	return 0;
 }
@@ -2545,6 +2609,7 @@ EXPORT_SYMBOL_GPL(snd_soc_register_codec);
  */
 void snd_soc_unregister_codec(struct snd_soc_codec *codec)
 {
+	lsd_audio_dbg(LSD_DBG,"at first of snd_soc_unregister_codec\n");	
 	mutex_lock(&client_mutex);
 	list_del(&codec->list);
 	mutex_unlock(&client_mutex);
@@ -2555,20 +2620,24 @@ EXPORT_SYMBOL_GPL(snd_soc_unregister_codec);
 
 static int __init snd_soc_init(void)
 {
+	lsd_audio_dbg(LSD_DBG,"at first of snd_soc_init\n");
 #ifdef CONFIG_DEBUG_FS
+	lsd_audio_dbg(LSD_DBG,"have define CONFIG_DEBUG_FS\n");	
 	debugfs_root = debugfs_create_dir("asoc", NULL);
 	if (IS_ERR(debugfs_root) || !debugfs_root) {
 		printk(KERN_WARNING
 		       "ASoC: Failed to create debugfs directory\n");
 		debugfs_root = NULL;
 	}
+	
 #endif
-
+	lsd_audio_dbg(LSD_DBG,"at last of snd_soc_init\n");
 	return platform_driver_register(&soc_driver);
 }
 
 static void __exit snd_soc_exit(void)
 {
+	lsd_audio_dbg(LSD_DBG,"at first of snd_soc_exit\n");
 #ifdef CONFIG_DEBUG_FS
 	debugfs_remove_recursive(debugfs_root);
 #endif

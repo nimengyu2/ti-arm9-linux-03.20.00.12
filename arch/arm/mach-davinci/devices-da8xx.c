@@ -23,6 +23,7 @@
 #include <mach/usb_musb.h>
 #include <mach/spi.h>
 
+#include <linux/lierda_debug.h>
 #include "clock.h"
 
 #define DA8XX_TPCC_BASE			0x01c00000
@@ -455,6 +456,7 @@ int __init da8xx_register_emac(void)
 	return platform_device_register(&da8xx_emac_device);
 }
 
+#if (M_LSD_AUDIO_MCBSP == 0)
 static struct resource da830_mcasp1_resources[] = {
 	{
 		.name	= "mcasp1",
@@ -511,8 +513,10 @@ static struct platform_device da850_mcasp_device = {
 	.resource	= da850_mcasp_resources,
 };
 
+
 void __init da8xx_register_mcasp(int id, struct snd_platform_data *pdata)
 {
+	lsd_audio_dbg(LSD_DBG,"first");	
 	/* DA830/OMAP-L137 has 3 instances of McASP */
 	if (cpu_is_davinci_da830() && id == 1) {
 		da830_mcasp1_device.dev.platform_data = pdata;
@@ -522,6 +526,7 @@ void __init da8xx_register_mcasp(int id, struct snd_platform_data *pdata)
 		platform_device_register(&da850_mcasp_device);
 	}
 }
+#endif
 
 static const struct display_panel disp_panel = {
 	QVGA,
@@ -930,6 +935,24 @@ static struct platform_device da850_mcbsp1_device = {
 	.num_resources	= ARRAY_SIZE(da850_mcbsp1_resources),
 	.resource	= da850_mcbsp1_resources,
 };
+
+// nmy add
+static struct platform_device am1808_asp_device = {
+	.name		= "davinci-asp",
+	.id		= 0,
+	.num_resources	= ARRAY_SIZE(da850_mcbsp0_resources),
+	.resource	= da850_mcbsp0_resources,
+};
+
+void __init am1808_init_asp(struct snd_platform_data *pdata)
+{
+	int ret;	
+	lsd_dbg(LSD_DBG,"first of am1808_init_asp\n");	
+	am1808_asp_device.dev.platform_data = pdata;
+	ret = platform_device_register(&am1808_asp_device);
+	lsd_dbg(LSD_DBG,"last of am1808_init_asp,ret=%d\n",ret);	
+}
+
 
 int
 __init da850_init_mcbsp(struct davinci_mcbsp_platform_data *pdata)

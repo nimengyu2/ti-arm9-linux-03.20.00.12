@@ -358,6 +358,14 @@ static struct clk mcbsp0_clk = {
 	.gpsc		= 1,
 };
 
+// nmy add
+static struct clk asp_clk = {
+	.name		= "asp",
+	.parent		= &pll0_sysclk2,
+	.lpsc		= DA850_LPSC1_MCBSP0,
+	.gpsc		= 1,
+};
+
 static struct clk mcbsp1_clk = {
 	.name		= "mcbsp1",
 	.parent		= &pll0_sysclk2,
@@ -461,8 +469,12 @@ static struct clk_lookup da850_clks[] = {
 	CLK(NULL,		"aemif",	&aemif_clk),
 	CLK("spi_davinci.0",	NULL,		&spi0_clk),
 	CLK("spi_davinci.1",	NULL,		&spi1_clk),
-	CLK("davinci-mcbsp.0",	NULL,		&mcbsp0_clk),
+	// nmy comment
+	// if no comment,then stop at "Starting udev"
+	//CLK("davinci-mcbsp.0",	NULL,		&mcbsp0_clk),
 	CLK("davinci-mcbsp.1",	NULL,		&mcbsp1_clk),
+	// nmy add
+	CLK("davinci-asp.0",	NULL,		&asp_clk),
 	CLK(NULL, 		"vpif",		&vpif_clk),
 	CLK(NULL,		"usb11",	&usb11_clk),
 	CLK(NULL,		"usb20",	&usb20_clk),

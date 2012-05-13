@@ -32,6 +32,7 @@
 #include "davinci-pcm.h"
 #include "davinci-i2s.h"
 #include "davinci-mcasp.h"
+#include "linux/lierda_debug.h"
 
 #define AUDIO_FORMAT (SND_SOC_DAIFMT_DSP_B | \
 		SND_SOC_DAIFMT_CBM_CFM | SND_SOC_DAIFMT_IB_NF)
@@ -200,9 +201,15 @@ static struct snd_soc_card da830_snd_soc_card = {
 	.num_links = 1,
 };
 
+// nmy modify
 static struct snd_soc_card da850_snd_soc_card = {
 	.name = "DA850/OMAP-L138 EVM",
+#if (M_LSD_AUDIO_MCBSP >= 1)
+	.dai_link = &evm_dai,
+#endif
+#if (M_LSD_AUDIO_MCBSP == 0)
 	.dai_link = &da8xx_evm_dai,
+#endif	
 	.platform = &davinci_soc_platform,
 	.num_links = 1,
 };
@@ -243,7 +250,7 @@ static int __init evm_init(void)
 	struct snd_soc_device *evm_snd_dev_data;
 	int index;
 	int ret;
-
+	lsd_audio_dbg(LSD_DBG,"first\n");
 	if (machine_is_davinci_evm() || machine_is_davinci_dm365_evm()) {
 		evm_snd_dev_data = &evm_snd_devdata;
 		index = 0;
@@ -262,15 +269,25 @@ static int __init evm_init(void)
 	} else
 		return -EINVAL;
 
+	lsd_audio_dbg(LSD_DBG,"start platform_device_alloc\n");
 	evm_snd_device = platform_device_alloc("soc-audio", index);
 	if (!evm_snd_device)
+	{
+		lsd_audio_dbg(LSD_ERR,"fail platform_device_alloc\n");		
 		return -ENOMEM;
-
+	}
+	else
+	{
+		lsd_audio_dbg(LSD_OK,"success platform_device_alloc\n");
+	}
+	
 	platform_set_drvdata(evm_snd_device, evm_snd_dev_data);
 	evm_snd_dev_data->dev = &evm_snd_device->dev;
 	ret = platform_device_add(evm_snd_device);
 	if (ret)
 		platform_device_put(evm_snd_device);
+
+	lsd_audio_dbg(LSD_OK,"last\n");
 
 	return ret;
 }

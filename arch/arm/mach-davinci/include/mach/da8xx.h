@@ -154,6 +154,9 @@ void da850_init_spi1(unsigned chipselect_mask,
 void da830_init_spi0(unsigned chipselect_mask,
 	struct spi_board_info *info, unsigned len);
 int da850_init_mcbsp(struct davinci_mcbsp_platform_data *pdata);
+// nmy add
+void __init am1808_init_asp(struct snd_platform_data *pdata);
+
 int __init da850_register_vpif(void);
 int __init da850_register_vpif_display(struct vpif_display_config
 							*display_config);

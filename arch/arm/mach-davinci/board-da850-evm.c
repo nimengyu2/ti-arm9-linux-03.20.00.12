@@ -42,6 +42,7 @@
 #include <mach/vpif.h>
 
 #include <media/tvp514x.h>
+#include <linux/lierda_debug.h>
 
 #define DA850_EVM_PHY_MASK		0x1
 #define DA850_EVM_MDIO_FREQUENCY	2200000 /* PHY bus frequency */
@@ -61,6 +62,8 @@
 #define VPIF_STATUS_CLR	(0x0030)
 #define DA850_USB1_VBUS_PIN		GPIO_TO_PIN(2, 4)
 #define DA850_USB1_OC_PIN		GPIO_TO_PIN(6, 13)
+
+
 
 static struct mtd_partition da850_evm_norflash_partition[] = {
 	{
@@ -632,6 +635,7 @@ static struct davinci_uart_config da850_evm_uart_config __initdata = {
 	.enabled_uarts = 0x7,
 };
 
+#if (M_LSD_AUDIO_MCBSP == 0)
 /* davinci da850 evm audio machine driver */
 static u8 da850_iis_serializer_direction[] = {
 	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,
@@ -652,6 +656,7 @@ static struct snd_platform_data da850_evm_snd_data = {
 	.txnumevt	= 1,
 	.rxnumevt	= 1,
 };
+#endif
 
 static struct davinci_mcbsp_platform_data da850_mcbsp0_config = {
 	.inst	= 0,
@@ -730,7 +735,8 @@ static const short da850_evm_lcdc_pins[] = {
 
 static int __init da850_evm_config_emac(void)
 {
-#if 0
+// nmy modify
+#if 1
 	void __iomem *cfg_chip3_base;
 	int ret;
 	u32 val;
@@ -1110,6 +1116,8 @@ static struct platform_device da850_gpio_i2c = {
 	},
 };
 
+static struct snd_platform_data am1808_evm_snd_data;
+
 static __init void da850_evm_init(void)
 {
 	int ret;
@@ -1203,6 +1211,7 @@ static __init void da850_evm_init(void)
 	//__raw_writel(0, IO_ADDRESS(DA8XX_UART1_BASE) + 0x30);
 	//__raw_writel(0, IO_ADDRESS(DA8XX_UART0_BASE) + 0x30);
 
+#if 0
 	if (HAS_MCBSP0) {
 		if (HAS_EMAC)
 			pr_warning("WARNING: both MCBSP0 and EMAC are "
@@ -1213,13 +1222,24 @@ static __init void da850_evm_init(void)
 		if (ret)
 			pr_warning("da850_evm_init: mcbsp0 mux setup failed:"
 					" %d\n", ret);
-
+		am1808_init_asp(&am1808_evm_snd_data);
+	}
+#endif
+	
+#if (M_LSD_AUDIO_MCBSP >= 1)
+	ret = da8xx_pinmux_setup(da850_mcbsp0_pins);
+	if (ret)
+		pr_warning("da850_evm_init: mcbsp0 mux setup failed:"
+				" %d\n", ret);
+	am1808_init_asp(&am1808_evm_snd_data);
+#endif
+/*
 		ret = da850_init_mcbsp(&da850_mcbsp0_config);
 		if (ret)
 			pr_warning("da850_evm_init: mcbsp0 registration"
 					"failed: %d\n",	ret);
-	}
-
+*/
+#if 0
 	if (HAS_MCBSP1) {
 		ret = da8xx_pinmux_setup(da850_mcbsp1_pins);
 		if (ret)
@@ -1231,7 +1251,8 @@ static __init void da850_evm_init(void)
 			pr_warning("da850_evm_init: mcbsp1 registration"
 					" failed: %d\n", ret);
 	}
-
+#endif
+#if (M_LSD_AUDIO_MCBSP == 0)
 	if (HAS_MCASP) {
 		if ((HAS_MCBSP0 || HAS_MCBSP1))
 			pr_warning("WARNING: both McASP and McBSP are enabled, "
@@ -1243,8 +1264,11 @@ static __init void da850_evm_init(void)
 			pr_warning("da850_evm_init: mcasp mux setup failed:"
 					"%d\n", ret);
 
+		lsd_audio_dbg(LSD_DBG,"do da8xx_register_mcasp");	
 		da8xx_register_mcasp(0, &da850_evm_snd_data);
+		
 	}
+#endif
 
 	ret = da8xx_pinmux_setup(da850_lcdcntl_pins);
 	if (ret)

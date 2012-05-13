@@ -38,6 +38,7 @@
 #include <linux/delay.h>
 #include <linux/pm.h>
 #include <linux/i2c.h>
+#define DEBUG 1
 #include <linux/platform_device.h>
 #include <sound/core.h>
 #include <sound/pcm.h>
@@ -48,7 +49,7 @@
 #include <sound/tlv.h>
 
 #include "tlv320aic3x.h"
-
+#include "linux/lierda_debug.h"
 #define AIC3X_VERSION "0.2"
 
 /* codec private data */
@@ -1159,7 +1160,7 @@ static int aic3x_resume(struct platform_device *pdev)
 static int aic3x_init(struct snd_soc_codec *codec)
 {
 	int reg;
-
+	lsd_audio_dbg(LSD_DBG,"at first of aic3x_init\n");
 	mutex_init(&codec->mutex);
 	INIT_LIST_HEAD(&codec->dapm_widgets);
 	INIT_LIST_HEAD(&codec->dapm_paths);
@@ -1244,6 +1245,8 @@ static int aic3x_init(struct snd_soc_codec *codec)
 
 	/* off, with power on */
 	aic3x_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+	
+	lsd_audio_dbg(LSD_DBG,"at last of aic3x_init\n");
 
 	return 0;
 }
@@ -1257,7 +1260,12 @@ static int aic3x_register(struct snd_soc_codec *codec)
 	ret = aic3x_init(codec);
 	if (ret < 0) {
 		dev_err(codec->dev, "Failed to initialise device\n");
+		lsd_audio_dbg(LSD_ERR,"Failed to  initialise device\n");
 		return ret;
+	}
+	else
+	{
+		lsd_audio_dbg(LSD_OK,"success to initialise device\n");
 	}
 
 	aic3x_codec = codec;
@@ -1265,15 +1273,27 @@ static int aic3x_register(struct snd_soc_codec *codec)
 	ret = snd_soc_register_codec(codec);
 	if (ret) {
 		dev_err(codec->dev, "Failed to register codec\n");
+		lsd_audio_dbg(LSD_ERR,"Failed to register codec\n");
 		return ret;
 	}
+	else
+	{
+		lsd_audio_dbg(LSD_OK,"success to register codec\n");
+	}	
+		
 
 	ret = snd_soc_register_dai(&aic3x_dai);
 	if (ret) {
 		dev_err(codec->dev, "Failed to register dai\n");
+		lsd_audio_dbg(LSD_ERR,"Failed to register dai\n");
 		snd_soc_unregister_codec(codec);
 		return ret;
 	}
+	else
+	{
+		lsd_audio_dbg(LSD_OK,"success to register dai\n");
+	}
+	lsd_audio_dbg(LSD_DBG,"lierda debug test,ret=%dret=%dret=%dret=%d\n",ret,ret,ret,ret);
 
 	return 0;
 }
@@ -1306,11 +1326,16 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
 {
 	struct snd_soc_codec *codec;
 	struct aic3x_priv *aic3x;
-
+	lsd_audio_dbg(LSD_DBG,"first of aic3x_i2c_probe\n");
 	aic3x = kzalloc(sizeof(struct aic3x_priv), GFP_KERNEL);
 	if (aic3x == NULL) {
 		dev_err(&i2c->dev, "failed to create private data\n");
+		lsd_audio_dbg(LSD_ERR,"failed to create private data\n");
 		return -ENOMEM;
+	}
+	else
+	{
+		lsd_audio_dbg(LSD_OK,"success to create private data\n");
 	}
 
 	codec = &aic3x->codec;
@@ -1321,6 +1346,7 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
 
 	i2c_set_clientdata(i2c, aic3x);
 
+	lsd_audio_dbg(LSD_DBG,"at last of aic3x_i2c_probe\n");
 	return aic3x_register(codec);
 }
 
@@ -1352,15 +1378,23 @@ static struct i2c_driver aic3x_i2c_driver = {
 static inline void aic3x_i2c_init(void)
 {
 	int ret;
-
+	lsd_audio_dbg(LSD_DBG,"first of aic3x_i2c_init \n");
 	ret = i2c_add_driver(&aic3x_i2c_driver);
 	if (ret)
+	{
 		printk(KERN_ERR "%s: error regsitering i2c driver, %d\n",
 		       __func__, ret);
+		lsd_audio_dbg(LSD_ERR,"failed to regsitering i2c driver\n");
+	}	
+	else
+	{
+		lsd_audio_dbg(LSD_OK,"success to regsitering i2c driver\n");
+	}
 }
 
 static inline void aic3x_i2c_exit(void)
 {
+	lsd_audio_dbg(LSD_DBG,"first of aic3x_i2c_exit \n");
 	i2c_del_driver(&aic3x_i2c_driver);
 }
 #else
@@ -1378,7 +1412,12 @@ static int aic3x_probe(struct platform_device *pdev)
 	codec = aic3x_codec;
 	if (!codec) {
 		dev_err(&pdev->dev, "Codec not registered\n");
+		lsd_audio_dbg(LSD_ERR,"Codec not registered\n");
 		return -ENODEV;
+	}
+	else
+	{
+		lsd_audio_dbg(LSD_OK,"success to Codec  registered\n");
 	}
 
 	socdev->card->codec = codec;
@@ -1396,13 +1435,19 @@ static int aic3x_probe(struct platform_device *pdev)
 	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
 	if (ret < 0) {
 		printk(KERN_ERR "aic3x: failed to create pcms\n");
+		lsd_audio_dbg(LSD_ERR,"aic3x: failed to create pcms\n");
 		goto pcm_err;
+	}
+	else
+	{
+		lsd_audio_dbg(LSD_OK,"success to to create pcms\n");
 	}
 
 	snd_soc_add_controls(codec, aic3x_snd_controls,
 			     ARRAY_SIZE(aic3x_snd_controls));
 
 	aic3x_add_widgets(codec);
+	lsd_audio_dbg(LSD_DBG,"at last of aic3x_probe\n");
 
 	return ret;
 
@@ -1438,6 +1483,7 @@ EXPORT_SYMBOL_GPL(soc_codec_dev_aic3x);
 
 static int __init aic3x_modinit(void)
 {
+	lsd_audio_dbg(LSD_DBG,"first of aic3x_modinit\n");	
 	aic3x_i2c_init();
 
 	return 0;
@@ -1446,6 +1492,7 @@ module_init(aic3x_modinit);
 
 static void __exit aic3x_exit(void)
 {
+	lsd_audio_dbg(LSD_DBG,"first of aic3x_exit\n");		
 	aic3x_i2c_exit();
 }
 module_exit(aic3x_exit);
