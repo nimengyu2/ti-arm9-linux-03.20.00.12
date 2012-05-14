@@ -565,10 +565,19 @@ static int davinci_i2s_probe(struct platform_device *pdev)
 	}
 	if (pdata) {
 		dev->enable_channel_combine = pdata->enable_channel_combine;
+		// nmy add
+		//pdata->sram_size_playback = 1 * 1024;
+		//pdata->sram_size_capture = 1 * 1024;
+
 		dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK].sram_size =
 			pdata->sram_size_playback;
 		dev->dma_params[SNDRV_PCM_STREAM_CAPTURE].sram_size =
 			pdata->sram_size_capture;
+		lsd_audio_dbg(LSD_OK,"have pdata\n");
+	}
+	else
+	{
+		lsd_audio_dbg(LSD_ERR,"no pdata\n");
 	}
 	dev->clk = clk_get(&pdev->dev, NULL);
 	if (IS_ERR(dev->clk)) {
@@ -617,6 +626,8 @@ static int davinci_i2s_probe(struct platform_device *pdev)
 
 	davinci_i2s_dai.private_data = dev;
 	davinci_i2s_dai.dma_data = dev->dma_params;
+	// nmy add
+	davinci_i2s_dai.dev = &pdev->dev;
 	ret = snd_soc_register_dai(&davinci_i2s_dai);
 	if (ret != 0)
 	{

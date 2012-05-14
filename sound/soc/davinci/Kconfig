@@ -56,8 +56,8 @@ config  SND_DA850_SOC_EVM
 	tristate "SoC Audio support for DA850/OMAP-L138/AM18xx EVM"
 	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DA850_EVM
 #	nmy modify
-	select SND_DAVINCI_SOC_MCASP
-#	select SND_DAVINCI_SOC_I2S
+#	select SND_DAVINCI_SOC_MCASP
+	select SND_DAVINCI_SOC_I2S
 	select SND_SOC_TLV320AIC3X
 	help
 	  Say Y if you want to add support for SoC audio on TI

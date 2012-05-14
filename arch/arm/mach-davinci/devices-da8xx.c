@@ -877,6 +877,8 @@ static struct resource da850_mcbsp0_resources[] = {
 		.end	= IRQ_DA850_MCBSP0XINT,
 		.flags	= IORESOURCE_IRQ,
 	},
+	// nmy modify
+#if 0
 	/* first RX, then TX */
 	{
 		.start	= 2,
@@ -886,6 +888,19 @@ static struct resource da850_mcbsp0_resources[] = {
 	{
 		.start	= 3,
 		.end	= 3,
+		.flags	= IORESOURCE_DMA,
+	},
+#endif
+	/* TX event */
+	{
+		.start	= DAVINCI_DA8XX_DMA_MCASP0_AXEVT,
+		.end	= DAVINCI_DA8XX_DMA_MCASP0_AXEVT,
+		.flags	= IORESOURCE_DMA,
+	},
+	/* RX event */
+	{
+		.start	= DAVINCI_DA8XX_DMA_MCASP0_AREVT,
+		.end	= DAVINCI_DA8XX_DMA_MCASP0_AREVT,
 		.flags	= IORESOURCE_DMA,
 	},
 };

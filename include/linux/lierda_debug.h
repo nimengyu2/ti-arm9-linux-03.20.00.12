@@ -20,7 +20,7 @@
 
 #define M_LSD_DBG  1
 #define M_LSD_AUDIO_DBG  1
-#define M_LSD_AUDIO_MCBSP  0
+#define M_LSD_AUDIO_MCBSP  1
 
 
 // all debug

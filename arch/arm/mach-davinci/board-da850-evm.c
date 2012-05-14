@@ -1116,7 +1116,21 @@ static struct platform_device da850_gpio_i2c = {
 	},
 };
 
-static struct snd_platform_data am1808_evm_snd_data;
+// nmy add
+//static struct snd_platform_data am1808_evm_snd_data;
+static struct snd_platform_data am1808_evm_snd_data= {
+	.tx_dma_offset	= 0x2000,
+	.rx_dma_offset	= 0x2000,
+	.op_mode	= DAVINCI_MCASP_IIS_MODE,
+	.tdm_slots	= 2,
+	.eventq_no	= EVENTQ_1,
+	.version	= MCASP_VERSION_0,
+	.txnumevt	= 1,
+	.rxnumevt	= 1,
+
+	//.sram_size_playback           = 1 * 1024,
+	//.sram_size_capture             = 1 * 1024,
+};
 
 static __init void da850_evm_init(void)
 {

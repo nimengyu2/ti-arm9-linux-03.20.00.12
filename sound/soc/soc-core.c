@@ -2429,6 +2429,7 @@ int snd_soc_register_dai(struct snd_soc_dai *dai)
 	mutex_unlock(&client_mutex);
 
 	pr_debug("Registered DAI '%s'\n", dai->name);
+	lsd_audio_dbg(LSD_OK,"Registered DAI '%s'\n", dai->name);
 
 	return 0;
 }
