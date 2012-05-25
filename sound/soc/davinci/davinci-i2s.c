@@ -177,13 +177,20 @@ static void davinci_mcbsp_start(struct davinci_mcbsp_dev *dev,
 	struct snd_soc_platform *platform = socdev->card->platform;
 	int playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
 	u32 spcr;
+	u32 tmp_data;
+
 	u32 mask = playback ? DAVINCI_MCBSP_SPCR_XRST : DAVINCI_MCBSP_SPCR_RRST;
+	lsd_audio_dbg(LSD_DBG,"at first of davinci_mcbsp_start\n");
 	spcr = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
 	if (spcr & mask) {
 		/* start off disabled */
 		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG,
 				spcr & ~mask);
 		toggle_clock(dev, playback);
+	}
+	else
+	{
+		lsd_audio_dbg(LSD_DBG,"start off disabled \n");
 	}
 	if (dev->pcr & (DAVINCI_MCBSP_PCR_FSXM | DAVINCI_MCBSP_PCR_FSRM |
 			DAVINCI_MCBSP_PCR_CLKXM | DAVINCI_MCBSP_PCR_CLKRM)) {
@@ -199,7 +206,18 @@ static void davinci_mcbsp_start(struct davinci_mcbsp_dev *dev,
 			int ret = platform->pcm_ops->trigger(substream,
 				SNDRV_PCM_TRIGGER_STOP);
 			if (ret < 0)
+			{
 				printk(KERN_DEBUG "Playback DMA stop failed\n");
+				lsd_audio_dbg(LSD_DBG,"Playback DMA stop failed\n");
+			}
+			else
+			{
+				lsd_audio_dbg(LSD_DBG,"Playback DMA stop ok\n");
+			}
+		}
+		else
+		{
+			lsd_audio_dbg(LSD_DBG,"no platform->pcm_ops->trigger\n");
 		}
 
 		/* Enable the transmitter */
@@ -221,7 +239,14 @@ static void davinci_mcbsp_start(struct davinci_mcbsp_dev *dev,
 			int ret = platform->pcm_ops->trigger(substream,
 				SNDRV_PCM_TRIGGER_START);
 			if (ret < 0)
+			{
 				printk(KERN_DEBUG "Playback DMA start failed\n");
+				lsd_audio_dbg(LSD_DBG,"Playback DMA start failed\n");
+			}
+			else
+			{
+				lsd_audio_dbg(LSD_DBG,"Playback DMA start ok\n");
+			}
 		}
 	}
 
@@ -234,11 +259,44 @@ static void davinci_mcbsp_start(struct davinci_mcbsp_dev *dev,
 		spcr |= DAVINCI_MCBSP_SPCR_FRST;
 	}
 	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, spcr);
+
+
+	// for print mcbsp reg data
+	// DAVINCI_MCBSP_DRR_REG	0x00
+	// DAVINCI_MCBSP_DXR_REG	0x04
+	// DAVINCI_MCBSP_SPCR_REG	0x08
+	// DAVINCI_MCBSP_RCR_REG	0x0c
+	// DAVINCI_MCBSP_XCR_REG	0x10
+	// DAVINCI_MCBSP_SRGR_REG	0x14
+	// DAVINCI_MCBSP_PCR_REG	0x24
+	tmp_data = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_DRR_REG);
+	lsd_audio_dbg(LSD_DBG,"Register:%s is  0x%08x\n","DAVINCI_MCBSP_DRR_REG",tmp_data);
+
+	tmp_data = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_DXR_REG);
+	lsd_audio_dbg(LSD_DBG,"Register:%s is  0x%08x\n","DAVINCI_MCBSP_DXR_REG",tmp_data);
+
+	tmp_data = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
+	lsd_audio_dbg(LSD_DBG,"Register:%s is  0x%08x\n","DAVINCI_MCBSP_SPCR_REG",tmp_data);
+	
+	tmp_data = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_RCR_REG);
+	lsd_audio_dbg(LSD_DBG,"Register:%s is  0x%08x\n","DAVINCI_MCBSP_RCR_REG",tmp_data);
+
+	tmp_data = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_XCR_REG);
+	lsd_audio_dbg(LSD_DBG,"Register:%s is  0x%08x\n","DAVINCI_MCBSP_XCR_REG",tmp_data);
+
+	tmp_data = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SRGR_REG);
+	lsd_audio_dbg(LSD_DBG,"Register:%s is  0x%08x\n","DAVINCI_MCBSP_SRGR_REG",tmp_data);
+	
+	tmp_data = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_PCR_REG);
+	lsd_audio_dbg(LSD_DBG,"Register:%s is  0x%08x\n","DAVINCI_MCBSP_PCR_REG",tmp_data);
+ 
 }
 
 static void davinci_mcbsp_stop(struct davinci_mcbsp_dev *dev, int playback)
 {
 	u32 spcr;
+
+	lsd_audio_dbg(LSD_DBG,"at first of davinci_mcbsp_stop\n");
 
 	/* Reset transmitter/receiver and sample rate/frame sync generators */
 	spcr = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
@@ -260,9 +318,12 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
 		DAVINCI_MCBSP_SRGR_FPER(DEFAULT_BITPERSAMPLE * 2 - 1) |
 		DAVINCI_MCBSP_SRGR_FWID(DEFAULT_BITPERSAMPLE - 1);
 
+	lsd_audio_dbg(LSD_DBG,"at first of set_dai_fmt\n");
+
 	/* set master/slave audio interface */
 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
 	case SND_SOC_DAIFMT_CBS_CFS:
+		lsd_audio_dbg(LSD_DBG,"SND_SOC_DAIFMT_CBS_CFS cpu is master\n");
 		/* cpu is master */
 		pcr = DAVINCI_MCBSP_PCR_FSXM |
 			DAVINCI_MCBSP_PCR_FSRM |
@@ -272,16 +333,19 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
 	case SND_SOC_DAIFMT_CBM_CFS:
 		/* McBSP CLKR pin is the input for the Sample Rate Generator.
 		 * McBSP FSR and FSX are driven by the Sample Rate Generator. */
+		lsd_audio_dbg(LSD_DBG,"SND_SOC_DAIFMT_CBM_CFS \n");
 		pcr = DAVINCI_MCBSP_PCR_SCLKME |
 			DAVINCI_MCBSP_PCR_FSXM |
 			DAVINCI_MCBSP_PCR_FSRM;
 		break;
 	case SND_SOC_DAIFMT_CBM_CFM:
 		/* codec is master */
+		lsd_audio_dbg(LSD_DBG,"SND_SOC_DAIFMT_CBM_CFM codec is master\n");
 		pcr = 0;
 		break;
 	default:
 		printk(KERN_ERR "%s:bad master\n", __func__);
+		lsd_audio_dbg(LSD_ERR,"bad master\n");
 		return -EINVAL;
 	}
 
@@ -305,14 +369,18 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
 		 * rate is lowered.
 		 */
 		fmt ^= SND_SOC_DAIFMT_NB_IF;
+		lsd_audio_dbg(LSD_DBG,"SND_SOC_DAIFMT_I2S\n");
 	case SND_SOC_DAIFMT_DSP_A:
 		dev->mode = MOD_DSP_A;
+		lsd_audio_dbg(LSD_DBG,"SND_SOC_DAIFMT_DSP_A\n");
 		break;
 	case SND_SOC_DAIFMT_DSP_B:
 		dev->mode = MOD_DSP_B;
+		lsd_audio_dbg(LSD_DBG,"SND_SOC_DAIFMT_DSP_B\n");
 		break;
 	default:
 		printk(KERN_ERR "%s:bad format\n", __func__);
+		lsd_audio_dbg(LSD_ERR,"bad master\n");
 		return -EINVAL;
 	}
 
@@ -328,6 +396,7 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
 		 * FSXP  Transmit frame sync pol, 0 - active high
 		 */
 		pcr |= (DAVINCI_MCBSP_PCR_CLKXP | DAVINCI_MCBSP_PCR_CLKRP);
+		lsd_audio_dbg(LSD_DBG,"SND_SOC_DAIFMT_NB_NF\n");
 		break;
 	case SND_SOC_DAIFMT_IB_IF:
 		/* CLKRP Receive clock polarity,
@@ -340,6 +409,7 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
 		 * FSXP  Transmit frame sync pol, 1 - active low
 		 */
 		pcr |= (DAVINCI_MCBSP_PCR_FSXP | DAVINCI_MCBSP_PCR_FSRP);
+		lsd_audio_dbg(LSD_DBG,"SND_SOC_DAIFMT_IB_IF\n");
 		break;
 	case SND_SOC_DAIFMT_NB_IF:
 		/* CLKRP Receive clock polarity,
@@ -353,6 +423,7 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
 		 */
 		pcr |= (DAVINCI_MCBSP_PCR_CLKXP | DAVINCI_MCBSP_PCR_CLKRP |
 			DAVINCI_MCBSP_PCR_FSXP | DAVINCI_MCBSP_PCR_FSRP);
+		lsd_audio_dbg(LSD_DBG,"SND_SOC_DAIFMT_NB_IF\n");
 		break;
 	case SND_SOC_DAIFMT_IB_NF:
 		/* CLKRP Receive clock polarity,
@@ -364,8 +435,10 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
 		 * FSRP  Receive frame sync pol, 0 - active high
 		 * FSXP  Transmit frame sync pol, 0 - active high
 		 */
+		lsd_audio_dbg(LSD_DBG,"SND_SOC_DAIFMT_IB_NF\n");
 		break;
 	default:
+		lsd_audio_dbg(LSD_ERR,"bad master\n");
 		return -EINVAL;
 	}
 	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SRGR_REG, srgr);
@@ -387,6 +460,7 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
 	u32 spcr;
 	snd_pcm_format_t fmt;
 	unsigned element_cnt = 1;
+	lsd_audio_dbg(LSD_DBG,"at first of i2s_hw_params\n");
 
 	/* general line settings */
 	spcr = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
@@ -419,7 +493,12 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
 	fmt = params_format(params);
 	if ((fmt > SNDRV_PCM_FORMAT_S32_LE) || !data_type[fmt]) {
 		printk(KERN_WARNING "davinci-i2s: unsupported PCM format\n");
+		lsd_audio_dbg(LSD_ERR,"davinci-i2s: unsupported PCM format\n");
 		return -EINVAL;
+	}
+	else
+	{
+		lsd_audio_dbg(LSD_OK,"davinci-i2s: supported PCM format\n");
 	}
 
 	if (params_channels(params) == 2) {
@@ -444,6 +523,8 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
 		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_XCR_REG, xcr);
 	else
 		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_RCR_REG, rcr);
+
+	lsd_audio_dbg(LSD_DBG,"at last of i2s_hw_params\n");
 	return 0;
 }
 
@@ -452,6 +533,7 @@ static int davinci_i2s_prepare(struct snd_pcm_substream *substream,
 {
 	struct davinci_mcbsp_dev *dev = dai->private_data;
 	int playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
+	lsd_audio_dbg(LSD_DBG,"i2s prepare\n");
 	davinci_mcbsp_stop(dev, playback);
 	if ((dev->pcr & DAVINCI_MCBSP_PCR_FSXM) == 0) {
 		/* codec is master */
@@ -473,14 +555,17 @@ static int davinci_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
 	case SNDRV_PCM_TRIGGER_START:
 	case SNDRV_PCM_TRIGGER_RESUME:
 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+		lsd_audio_dbg(LSD_DBG,"i2s trigger cmd start =%d\n",cmd);
 		davinci_mcbsp_start(dev, substream);
 		break;
 	case SNDRV_PCM_TRIGGER_STOP:
 	case SNDRV_PCM_TRIGGER_SUSPEND:
 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+		lsd_audio_dbg(LSD_DBG,"i2s trigger cmd stop =%d\n",cmd);
 		davinci_mcbsp_stop(dev, playback);
 		break;
 	default:
+		lsd_audio_dbg(LSD_DBG,"i2s trigger cmd default =%d\n",cmd);
 		ret = -EINVAL;
 	}
 	return ret;
@@ -491,6 +576,7 @@ static void davinci_i2s_shutdown(struct snd_pcm_substream *substream,
 {
 	struct davinci_mcbsp_dev *dev = dai->private_data;
 	int playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
+	lsd_audio_dbg(LSD_DBG,"i2s mcbsp stop\n");
 	davinci_mcbsp_stop(dev, playback);
 }
 
@@ -661,6 +747,7 @@ static int davinci_i2s_remove(struct platform_device *pdev)
 	kfree(dev);
 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	release_mem_region(mem->start, (mem->end - mem->start) + 1);
+	lsd_audio_dbg(LSD_DBG,"at last of davinci remove i2s\n");
 
 	return 0;
 }

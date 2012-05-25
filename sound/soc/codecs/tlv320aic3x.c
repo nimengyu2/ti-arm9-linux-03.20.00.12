@@ -753,6 +753,7 @@ static int aic3x_add_widgets(struct snd_soc_codec *codec)
 
 	/* set up audio path interconnects */
 	snd_soc_dapm_add_routes(codec, intercon, ARRAY_SIZE(intercon));
+	lsd_audio_dbg(LSD_DBG,"aic3x_add_widgets\n");
 
 	return 0;
 }
@@ -769,6 +770,7 @@ static int aic3x_hw_params(struct snd_pcm_substream *substream,
 	u8 data, r, p, pll_q, pll_p = 1, pll_r = 1, pll_j = 1;
 	u16 pll_d = 1;
 	u8 reg;
+	lsd_audio_dbg(LSD_DBG,"aic3x_hw_params\n");
 
 	/* select data word length */
 	data =
@@ -894,12 +896,15 @@ static int aic3x_mute(struct snd_soc_dai *dai, int mute)
 	u8 rdac_reg = aic3x_read_reg_cache(codec, RDAC_VOL) & ~MUTE_ON;
 
 	if (mute) {
+		lsd_audio_dbg(LSD_DBG,"aic3x_mute\n");
 		aic3x_write(codec, LDAC_VOL, ldac_reg | MUTE_ON);
 		aic3x_write(codec, RDAC_VOL, rdac_reg | MUTE_ON);
 	} else {
+		lsd_audio_dbg(LSD_DBG,"aic3x_unmute\n");
 		aic3x_write(codec, LDAC_VOL, ldac_reg);
 		aic3x_write(codec, RDAC_VOL, rdac_reg);
 	}
+	
 
 	return 0;
 }
@@ -921,6 +926,7 @@ static int aic3x_set_dai_fmt(struct snd_soc_dai *codec_dai,
 	struct aic3x_priv *aic3x = codec->private_data;
 	u8 iface_areg, iface_breg;
 	int delay = 0;
+	lsd_audio_dbg(LSD_DBG,"aic3x_set_dai_fmt\n");
 
 	iface_areg = aic3x_read_reg_cache(codec, AIC3X_ASD_INTF_CTRLA) & 0x3f;
 	iface_breg = aic3x_read_reg_cache(codec, AIC3X_ASD_INTF_CTRLB) & 0x3f;
@@ -974,7 +980,7 @@ static int aic3x_set_bias_level(struct snd_soc_codec *codec,
 {
 	struct aic3x_priv *aic3x = codec->private_data;
 	u8 reg;
-
+	lsd_audio_dbg(LSD_DBG,"aic3x_set_bias_level\n");
 	switch (level) {
 	case SND_SOC_BIAS_ON:
 		/* all power is driven by DAPM system */
@@ -1075,6 +1081,7 @@ void aic3x_set_headset_detection(struct snd_soc_codec *codec, int detect,
 		val |= AIC3X_HEADSET_DETECT_ENABLED;
 
 	aic3x_write(codec, AIC3X_HEADSET_DETECT_CTRL_A, val);
+	lsd_audio_dbg(LSD_DBG,"at last of aic3x_set_headset_detection\n");
 }
 EXPORT_SYMBOL_GPL(aic3x_set_headset_detection);
 
@@ -1082,6 +1089,7 @@ int aic3x_headset_detected(struct snd_soc_codec *codec)
 {
 	u8 val;
 	aic3x_read(codec, AIC3X_HEADSET_DETECT_CTRL_B, &val);
+	lsd_audio_dbg(LSD_DBG,"at last of aic3x_headset_detected\n");
 	return (val >> 4) & 1;
 }
 EXPORT_SYMBOL_GPL(aic3x_headset_detected);
@@ -1090,6 +1098,7 @@ int aic3x_button_pressed(struct snd_soc_codec *codec)
 {
 	u8 val;
 	aic3x_read(codec, AIC3X_HEADSET_DETECT_CTRL_B, &val);
+	lsd_audio_dbg(LSD_DBG,"at last of aic3x_button_pressed\n");
 	return (val >> 5) & 1;
 }
 EXPORT_SYMBOL_GPL(aic3x_button_pressed);
@@ -1129,6 +1138,7 @@ static int aic3x_suspend(struct platform_device *pdev, pm_message_t state)
 	struct snd_soc_codec *codec = socdev->card->codec;
 
 	aic3x_set_bias_level(codec, SND_SOC_BIAS_OFF);
+	lsd_audio_dbg(LSD_DBG,"at last of aic3x_suspend\n");
 
 	return 0;
 }
@@ -1149,6 +1159,7 @@ static int aic3x_resume(struct platform_device *pdev)
 	}
 
 	aic3x_set_bias_level(codec, codec->suspend_bias_level);
+	lsd_audio_dbg(LSD_DBG,"at last of aic3x_resume\n");
 
 	return 0;
 }
