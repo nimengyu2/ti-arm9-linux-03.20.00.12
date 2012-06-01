@@ -881,13 +881,13 @@ static struct resource da850_mcbsp0_resources[] = {
 #if 1
 	/* first RX, then TX */
 	{
-		.start	= 2,
-		.end	= 2,
+		.start	= 3,
+		.end	= 3,
 		.flags	= IORESOURCE_DMA,
 	},
 	{
-		.start	= 3,
-		.end	= 3,
+		.start	= 2,
+		.end	= 2,
 		.flags	= IORESOURCE_DMA,
 	},
 #endif
