@@ -24,6 +24,7 @@
 #include <mach/cpuidle.h>
 #include <mach/usb_musb.h>
 #include <mach/spi.h>
+#include <linux/lierda_debug.h>
 
 #include "clock.h"
 
@@ -610,6 +611,7 @@ int __init da8xx_register_emac(void)
 	return platform_device_register(&da8xx_emac_device);
 }
 
+#if 0
 static struct resource da830_mcasp1_resources[] = {
 	{
 		.name	= "mcasp1",
@@ -677,6 +679,7 @@ void __init da8xx_register_mcasp(int id, struct snd_platform_data *pdata)
 		platform_device_register(&da850_mcasp_device);
 	}
 }
+#endif
 
 static const struct display_panel disp_panel = {
 	QVGA,
@@ -1021,6 +1024,7 @@ static struct resource da850_mcbsp0_resources[] = {
 		.end	= IRQ_DA850_MCBSP0XINT,
 		.flags	= IORESOURCE_IRQ,
 	},
+#if 0
 	/* first RX, then TX */
 	{
 		.start	= 2,
@@ -1032,6 +1036,20 @@ static struct resource da850_mcbsp0_resources[] = {
 		.end	= 3,
 		.flags	= IORESOURCE_DMA,
 	},
+#endif
+		// nmy modify
+	/* first RX, then TX */
+	{
+		.start	= 3,
+		.end	= 3,
+		.flags	= IORESOURCE_DMA,
+	},
+	{
+		.start	= 2,
+		.end	= 2,
+		.flags	= IORESOURCE_DMA,
+	},
+
 };
 
 static struct resource da850_mcbsp1_resources[] = {
@@ -1097,6 +1115,25 @@ __init da850_init_mcbsp(struct davinci_mcbsp_platform_data *pdata)
 	pdev->dev.platform_data = pdata;
 	return platform_device_register(pdev);
 }
+
+// nmy add
+static struct platform_device am1808_asp_device = {
+	.name		= "davinci-asp",
+	.id		= 0,
+	.num_resources	= ARRAY_SIZE(da850_mcbsp0_resources),
+	.resource	= da850_mcbsp0_resources,
+};
+
+void __init am1808_init_asp(struct snd_platform_data *pdata)
+{
+	int ret;	
+	lsd_dbg(LSD_DBG,"first of am1808_init_asp\n");	
+	am1808_asp_device.dev.platform_data = pdata;
+	ret = platform_device_register(&am1808_asp_device);
+	lsd_dbg(LSD_DBG,"last of am1808_init_asp,ret=%d\n",ret);	
+}
+
+
 
 static struct resource da850_ahci_resources[] = {
 	{

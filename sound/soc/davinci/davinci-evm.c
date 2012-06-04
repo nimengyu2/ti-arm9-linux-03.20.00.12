@@ -202,7 +202,9 @@ static struct snd_soc_card da830_snd_soc_card = {
 
 static struct snd_soc_card da850_snd_soc_card = {
 	.name = "DA850/OMAP-L138 EVM",
-	.dai_link = &da8xx_evm_dai,
+	// nmy add
+	//.dai_link = &da8xx_evm_dai,
+	.dai_link = &evm_dai,
 	.platform = &davinci_soc_platform,
 	.num_links = 1,
 };

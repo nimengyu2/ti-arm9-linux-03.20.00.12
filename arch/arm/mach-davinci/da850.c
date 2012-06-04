@@ -372,12 +372,14 @@ static struct clk spi1_clk = {
 	.flags		= DA850_CLK_ASYNC3,
 };
 
+#if 0
 static struct clk mcbsp0_clk = {
 	.name		= "mcbsp0",
 	.parent		= &pll0_sysclk2,
 	.lpsc		= DA850_LPSC1_MCBSP0,
 	.gpsc		= 1,
 };
+#endif
 
 static struct clk mcbsp1_clk = {
 	.name		= "mcbsp1",
@@ -422,6 +424,15 @@ static struct clk ecap_clk = {
     .gpsc       = 1,
     .flags          = DA850_CLK_ASYNC3,
 };
+
+// nmy add
+static struct clk asp_clk = {
+	.name		= "asp",
+	.parent		= &pll0_sysclk2,
+	.lpsc		= DA850_LPSC1_MCBSP0,
+	.gpsc		= 1,
+};
+
 
 static struct clk_lookup da850_clks[] = {
 	CLK(NULL,		"ref",		&ref_clk),
@@ -469,8 +480,10 @@ static struct clk_lookup da850_clks[] = {
 	CLK(NULL,		"aemif",	&aemif_clk),
 	CLK("spi_davinci.0",	NULL,		&spi0_clk),
 	CLK("spi_davinci.1",	NULL,		&spi1_clk),
-	CLK("davinci-mcbsp.0",	NULL,		&mcbsp0_clk),
+	//CLK("davinci-mcbsp.0",	NULL,		&mcbsp0_clk),
 	CLK("davinci-mcbsp.1",	NULL,		&mcbsp1_clk),
+	// nmy add
+	CLK("davinci-asp.0",	NULL,		&asp_clk),
 	CLK(NULL, 		"vpif",		&vpif_clk),
 	CLK(NULL, 		"ecap", 	&ecap_clk),
 	CLK(NULL,		"usb11",	&usb11_clk),
@@ -663,10 +676,10 @@ static const struct mux_config da850_pins[] = {
 	/* McBSP0 function */
 	MUX_CFG(DA850,	MCBSP0_CLKR,	2,	4,	15,	2,	false)
 	MUX_CFG(DA850,	MCBSP0_CLKX,	2,	8,	15,	2,	false)
-	MUX_CFG(DA850,	MCBSP0_FSR,		2,	12,	15,	2,	false)
-	MUX_CFG(DA850,	MCBSP0_FSX,		2,	16,	15,	2,	false)
-	MUX_CFG(DA850,	MCBSP0_DR,		2,	20,	15,	2,	false)
-	MUX_CFG(DA850,	MCBSP0_DX,		2,	24,	15,	2,	false)
+	MUX_CFG(DA850,	MCBSP0_FSR,	2,	12,	15,	2,	false)
+	MUX_CFG(DA850,	MCBSP0_FSX,	2,	16,	15,	2,	false)
+	MUX_CFG(DA850,	MCBSP0_DR,	2,	20,	15,	2,	false)
+	MUX_CFG(DA850,	MCBSP0_DX,	2,	24,	15,	2,	false)
 	MUX_CFG(DA850,	MCBSP0_CLKS,	2,	28,	15,	0,	false)
 	/* McBSP1 function */
 	MUX_CFG(DA850,	MCBSP1_CLKR,	1,	4,	15,	2,	false)
@@ -732,7 +745,8 @@ static const struct mux_config da850_pins[] = {
 };
 
 const short da850_uart0_pins[] __initdata = {
-	DA850_NUART0_CTS, DA850_NUART0_RTS, DA850_UART0_RXD, DA850_UART0_TXD,
+	//DA850_NUART0_CTS, DA850_NUART0_RTS, 
+	DA850_UART0_RXD, DA850_UART0_TXD,
 	-1
 };
 
@@ -743,14 +757,15 @@ const short da850_pru_can_pins[] __initdata = {
 };
 
 const short da850_pru_suart_pins[] __initdata = {
-	DA850_AHCLKX, DA850_ACLKX, DA850_AFSX,
+	//DA850_AHCLKX, DA850_ACLKX, DA850_AFSX,
 	//    DA850_AHCLKR, DA850_ACLKR, DA850_AFSR,
-	DA850_AHCLKR, DA850_PRU0_R30_20, DA850_PRU0_R31_20,
+	//DA850_AHCLKR,
+	 DA850_PRU0_R30_20, DA850_PRU0_R31_20,DA850_PRU0_R30_16,
    	 // nmy modify
-	DA850_AXR_0,DA850_AXR_1,DA850_AXR_3,DA850_AXR_4,DA850_AXR_5,DA850_AXR_6,
-	DA850_AXR_7,DA850_AXR_8,DA850_AXR_9, DA850_AXR_10,DA850_AXR_11, DA850_AXR_12,
-    	DA850_AXR_13, DA850_AXR_14,  DA850_AXR_15,    
-	DA850_UART1_RXD, DA850_UART1_TXD, DA850_PRU0_R30_16
+	/*DA850_AXR_0,DA850_AXR_1,DA850_AXR_3,DA850_AXR_4,DA850_AXR_5,DA850_AXR_6,*/
+	DA850_AXR_7,DA850_AXR_8,DA850_AXR_9, DA850_AXR_10,DA850_AXR_11, 
+	DA850_AXR_12,DA850_AXR_13, DA850_AXR_14,  DA850_AXR_15,
+	//DA850_UART1_RXD, DA850_UART1_TXD,
 	-1
 };
 
@@ -845,8 +860,8 @@ const short da850_spi1_pins[] __initdata = {
 };
 
 const short da850_mcbsp0_pins[] __initdata = {
-	/*DA850_MCBSP0_CLKR, DA850_MCBSP0_CLKX, DA850_MCBSP0_FSR,
-	DA850_MCBSP0_FSX, DA850_MCBSP0_DR, DA850_MCBSP0_DX, DA850_MCBSP0_CLKS,*/
+	DA850_MCBSP0_CLKR, DA850_MCBSP0_CLKX, DA850_MCBSP0_FSR,
+	DA850_MCBSP0_FSX, DA850_MCBSP0_DR, DA850_MCBSP0_DX, DA850_MCBSP0_CLKS,
 	-1
 };
 
@@ -1246,12 +1261,13 @@ static int da850_set_voltage(unsigned int index)
 
 static int da850_regulator_init(void)
 {
+#if 0
 	cvdd = regulator_get(NULL, "cvdd");
 	if (WARN(IS_ERR(cvdd), "Unable to obtain voltage regulator for CVDD;"
 					" voltage scaling unsupported\n")) {
 		return PTR_ERR(cvdd);
 	}
-
+#endif
 	return 0;
 }
 #endif

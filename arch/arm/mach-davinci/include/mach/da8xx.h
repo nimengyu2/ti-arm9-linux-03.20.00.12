@@ -162,6 +162,9 @@ int __init da850_register_vpif_display(struct vpif_display_config
 int __init da850_register_vpif_capture(struct vpif_capture_config
 							*capture_config);
 int __init da850_register_ecap(char);
+// nmy add
+void __init am1808_init_asp(struct snd_platform_data *pdata);
+
 
 int cppi41_init(void);
 int da8xx_register_sata(void);

@@ -553,13 +553,16 @@ static struct tps6507x_board tps_board = {
 };
 
 static struct i2c_board_info __initdata da850_evm_i2c_devices[] = {
+#if 0	
 	{
 		I2C_BOARD_INFO("tps6507x", 0x48),
 		.platform_data = &tps_board,
 	},
+#endif
 	{
 		I2C_BOARD_INFO("tlv320aic3x", 0x18),
 	},
+#if 0
 	{
 		I2C_BOARD_INFO("tca6416", 0x20),
 		.platform_data = &da850_evm_ui_expander_info,
@@ -567,12 +570,14 @@ static struct i2c_board_info __initdata da850_evm_i2c_devices[] = {
 	{
 		I2C_BOARD_INFO("cdce913", 0x65),
 	},
+#endif
 };
 
 static struct davinci_uart_config da850_evm_uart_config __initdata = {
 	.enabled_uarts = 0x7,
 };
 
+#if 0
 /* davinci da850 evm audio machine driver */
 static u8 da850_iis_serializer_direction[] = {
 	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,
@@ -593,6 +598,10 @@ static struct snd_platform_data da850_evm_snd_data = {
 	.txnumevt	= 1,
 	.rxnumevt	= 1,
 };
+#endif
+
+static struct snd_platform_data am1808_evm_snd_data={};
+
 
 static struct davinci_mcbsp_platform_data da850_mcbsp0_config = {
 	.inst	= 0,
@@ -1154,7 +1163,16 @@ static __init void da850_evm_init(void)
 	platform_add_devices(lsd_am1808_devices, 
 		ARRAY_SIZE(lsd_am1808_devices)); 
 
-	
+
+
+	ret = da8xx_pinmux_setup(da850_uart1_pins);
+	if (ret)
+		pr_warning("da850_evm_init: uart1 mux setup failed: %d\n",
+				ret);	
+	ret = da8xx_pinmux_setup(da850_uart0_pins);
+	if (ret)
+		pr_warning("da850_evm_init: uart0 mux setup failed: %d\n",
+				ret);
 	davinci_serial_init(&da850_evm_uart_config);
 
 	i2c_register_board_info(1, da850_evm_i2c_devices,
@@ -1211,6 +1229,14 @@ static __init void da850_evm_init(void)
 
 		da8xx_register_mcasp(0, &da850_evm_snd_data);
 	}
+#endif
+
+	ret = da8xx_pinmux_setup(da850_mcbsp0_pins);
+	if (ret)
+		pr_warning("da850_evm_init: mcbsp0 mux setup failed:"
+				" %d\n", ret);
+	am1808_init_asp(&am1808_evm_snd_data);
+
 
 	ret = da8xx_pinmux_setup(da850_lcdcntl_pins);
 	if (ret)
@@ -1237,7 +1263,7 @@ static __init void da850_evm_init(void)
 	ret = da8xx_register_rtc();
 	if (ret)
 		pr_warning("da850_evm_init: rtc setup failed: %d\n", ret);
-#endif
+
 
 	ret = da850_register_cpufreq();
 	if (ret)
@@ -1271,6 +1297,7 @@ static __init void da850_evm_init(void)
 		pr_warning("da850_evm_init: SATA registration failed: %d\n",
 						ret);
 
+#if 0
 	if (HAS_VPIF_DISPLAY || HAS_VPIF_CAPTURE) {
 		ret = da850_register_vpif();
 		if (ret)
@@ -1303,14 +1330,17 @@ static __init void da850_evm_init(void)
 					"%d\n",	ret);
 
 	}
-    ret = davinci_cfg_reg(DA850_ECAP2_APWM2);
-    if (ret)
-        pr_warning("da850_evm_init:ecap mux failed: %d\n", ret);
+#endif
+#if 0
+	ret = davinci_cfg_reg(DA850_ECAP2_APWM2);
+	if (ret)
+	pr_warning("da850_evm_init:ecap mux failed: %d\n", ret);
 
-    ret = da850_register_ecap(2);
-    if (ret)
-        pr_warning("da850_evm_init: eCAP registration failed: %d\n",
-                   ret);
+	ret = da850_register_ecap(2);
+	if (ret)
+	pr_warning("da850_evm_init: eCAP registration failed: %d\n",
+		   ret);
+#endif
 
 }
 
