@@ -182,9 +182,11 @@ static struct da8xx_panel known_lcd_panels[] = {
 		.pxl_clk = 4608000,
 		.invert_pxl_clk = 1,
 	},
+	// nmy modify
+#if 0
 	/* Sharp LK043T1DG01 */
 	[1] = {
-		.name = "Sharp_LK043T1DG01",
+		.name = "Sharp_LK043T1DG01",	
 		.width = 480,
 		.height = 272,
 		.hfp = 2,
@@ -195,6 +197,21 @@ static struct da8xx_panel known_lcd_panels[] = {
 		.vsw = 10,
 		.pxl_clk = 7833600,
 		.invert_pxl_clk = 0,
+	},
+#endif
+	[1] = {
+		.name = "Sharp_LK043T1DG01",	
+		.width = 800,
+		.height = 480,
+		.hfp = 210, // Min: 16 Normal: 210 Max: 354
+		.hbp = 6, // (Min: 46 Normal: 46 Max: 46) - 40
+		.hsw = 40, // Min: 1 Normal: - Max: 40
+		.vfp = 22, // Min: 7 Normal: 22 Max: 147
+		.vbp = 3, // (Min: 23 Normal: 23 Max: 23) - 20
+		.vsw = 20, // Min: 1 Normal: - Max: 20
+		.pxl_clk =  (800+210+46)*(480+45)*60,
+		.invert_pxl_clk = 0, // may not to invert clks
+
 	},
 };
 

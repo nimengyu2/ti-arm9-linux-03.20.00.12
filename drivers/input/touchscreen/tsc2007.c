@@ -184,7 +184,8 @@ static void tsc2007_work(struct work_struct *work)
 	tsc2007_read_values(ts, &tc);
 
 	rt = tsc2007_calculate_pressure(ts, &tc);
-	if (rt > MAX_12BIT) {
+	//if (rt > MAX_12BIT) {
+	if (rt > 600) {
 		/*
 		 * Sample found inconsistent by debouncing or pressure is
 		 * beyond the maximum. Don't report it to user space,
