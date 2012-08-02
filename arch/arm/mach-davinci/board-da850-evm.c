@@ -678,7 +678,7 @@ static int __init da850_evm_config_emac(void)
 	//u8 rmii_en = soc_info->emac_pdata->rmii_en;
 	 // Modify by toby.zhang @2011.01.09
 	u8 rmii_en;
-	soc_info->emac_pdata->rmii_en = 1;
+	soc_info->emac_pdata->rmii_en = 0;
 	rmii_en = soc_info->emac_pdata->rmii_en;
 
 
