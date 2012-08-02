@@ -1246,12 +1246,13 @@ static int da850_set_voltage(unsigned int index)
 
 static int da850_regulator_init(void)
 {
+#if 0
 	cvdd = regulator_get(NULL, "cvdd");
 	if (WARN(IS_ERR(cvdd), "Unable to obtain voltage regulator for CVDD;"
 					" voltage scaling unsupported\n")) {
 		return PTR_ERR(cvdd);
 	}
-
+#endif
 	return 0;
 }
 #endif
