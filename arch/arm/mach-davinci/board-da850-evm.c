@@ -41,6 +41,8 @@
 #include <mach/vpif.h>
 
 #include <media/tvp514x.h>
+// nmy add for pwm
+#include <linux/clk.h>
 
 #define DA850_EVM_PHY_MASK		0x1
 #define DA850_EVM_MDIO_FREQUENCY	2200000 /* PHY bus frequency */
@@ -1082,6 +1084,7 @@ device_initcall(da850_evm_config_pru_can);
 
 static int __init da850_evm_config_pru_suart(void)
 {
+#if 0
     int ret;
 
     if (!machine_is_davinci_da850_evm())
@@ -1096,9 +1099,14 @@ static int __init da850_evm_config_pru_suart(void)
     if (ret)
         pr_warning("da850_evm_init: pru suart registration failed: %d\n", ret);
     return ret;
+#endif
 }
 device_initcall(da850_evm_config_pru_suart);
 
+// nmy add for pwm
+extern struct clk pwm1_clk;
+extern struct clk pwm0_clk;
+extern struct clk ecap_clk;
 static __init void da850_evm_init(void)
 {
 	int ret;
@@ -1266,6 +1274,7 @@ static __init void da850_evm_init(void)
 
 	da850_evm_usb_init();
 
+#if 0
 	ret = da8xx_register_sata();
 	if (ret)
 		pr_warning("da850_evm_init: SATA registration failed: %d\n",
@@ -1303,14 +1312,29 @@ static __init void da850_evm_init(void)
 					"%d\n",	ret);
 
 	}
-    ret = davinci_cfg_reg(DA850_ECAP2_APWM2);
-    if (ret)
-        pr_warning("da850_evm_init:ecap mux failed: %d\n", ret);
+#endif
+	//ret = davinci_cfg_reg(DA850_ECAP2_APWM2);
+	//if (ret)
+	//	pr_warning("da850_evm_init:DA850_ECAP2_APWM2 mux failed: %d\n", ret);
+	//ret = davinci_cfg_reg(DA850_ECAP1_APWM1);
+	//if (ret)
+	//	pr_warning("da850_evm_init:DA850_ECAP1_APWM1 mux failed: %d\n", ret);
+	clk_enable(&ecap_clk);
 
-    ret = da850_register_ecap(2);
-    if (ret)
-        pr_warning("da850_evm_init: eCAP registration failed: %d\n",
-                   ret);
+	//ret = da850_register_ecap(2);
+	//if (ret)
+	//	pr_warning("da850_evm_init: eCAP registration failed: %d\n",
+	//	   ret);
+
+	// nmy add for pwm
+	clk_enable(&pwm1_clk);
+	clk_enable(&pwm0_clk);
+	ret = da8xx_pinmux_setup(da850_pwm_pins);
+	if (ret)
+		pr_warning("da850_evm_init:da850_pwm_pins mux failed: %d\n", ret);
+	else
+		pr_warning("da850_evm_init:da850_pwm_pins mux ok: %d\n", ret);
+	
 
 }
 

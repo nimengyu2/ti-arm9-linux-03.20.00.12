@@ -50,6 +50,7 @@ Module.symvers
 include/config
 include/linux/version.h
 include/generated
+arch/arm/boot/compressed/piggy.gzip
 
 # stgit generated dirs
 patches-*

@@ -979,10 +979,14 @@ enum davinci_da850_index {
 	DA850_VPIF_CLKO2,
 	DA850_VPIF_CLKO3,
 
-    /* eCAP functions */
-    DA850_ECAP0_APWM0,
-    DA850_ECAP1_APWM1,
-    DA850_ECAP2_APWM2,
+    	/* eCAP functions */
+    	DA850_ECAP0_APWM0,
+    	DA850_ECAP1_APWM1,
+    	DA850_ECAP2_APWM2,
+	
+	// nmy add for pwm start
+	DA850_EPWM1A,
+	DA850_EPWM0B,
 
 };
 

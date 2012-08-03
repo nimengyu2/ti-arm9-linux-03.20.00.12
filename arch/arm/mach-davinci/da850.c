@@ -415,13 +415,37 @@ static struct clk sata_clk = {
 	.gpsc		= 1,
 };
 
-static struct clk ecap_clk = {
+struct clk ecap_clk = {
     .name       = "ecap",
     .parent     = &pll0_sysclk2,
     .lpsc       = DA8XX_LPSC1_ECAP,
     .gpsc       = 1,
     .flags          = DA850_CLK_ASYNC3,
 };
+
+
+// nmy add for pwm start
+struct clk pwm0_clk = {
+	.name		= "pwm0",
+	.parent		= &pll0_sysclk2,
+	.lpsc		= DA8XX_LPSC1_PWM,
+	.gpsc		= 1,
+};
+
+struct clk pwm1_clk = {
+	.name		= "pwm1",
+	.parent		= &pll0_sysclk2,
+	.lpsc		= DA8XX_LPSC1_PWM,
+	.gpsc		= 1,
+};
+
+struct clk pwm2_clk = {
+	.name		= "pwm2",
+	.parent		= &pll0_sysclk2,
+	.lpsc		= DA8XX_LPSC1_PWM,
+	.gpsc		= 1,
+};
+// nmy add for pwm end
 
 static struct clk_lookup da850_clks[] = {
 	CLK(NULL,		"ref",		&ref_clk),
@@ -472,7 +496,7 @@ static struct clk_lookup da850_clks[] = {
 	CLK("davinci-mcbsp.0",	NULL,		&mcbsp0_clk),
 	CLK("davinci-mcbsp.1",	NULL,		&mcbsp1_clk),
 	CLK(NULL, 		"vpif",		&vpif_clk),
-	CLK(NULL, 		"ecap", 	&ecap_clk),
+	//CLK(NULL, 		"ecap", 	&ecap_clk),
 	CLK(NULL,		"usb11",	&usb11_clk),
 	CLK(NULL,		"usb20",	&usb20_clk),
 	CLK(NULL,		"ahci",		&sata_clk),
@@ -716,20 +740,39 @@ static const struct mux_config da850_pins[] = {
 	MUX_CFG(DA850, VPIF_DOUT15,	17,	8,	15,	1,	false)
 	MUX_CFG(DA850, VPIF_CLKO2,	19,	12,	15,	1,	false)
 	MUX_CFG(DA850, VPIF_CLKO3,	19,	20,	15,	1,	false)
-    /* Soft-UART flow control */
-    MUX_CFG(DA850, PRU0_R31_20,  0,  12, 15, 0,  false)
-    MUX_CFG(DA850, PRU0_R30_20,  0,  0, 15, 4,  false)
-    /* Soft-UART DIR */
-    MUX_CFG(DA850, PRU0_R30_16,  0,  24, 15, 2,  false)
-    /* eCAP0 function */
-    MUX_CFG(DA850, ECAP0_APWM0, 2,  28, 15, 2,  false)
-    /* eCAP1 function */
-    MUX_CFG(DA850, ECAP1_APWM1, 1,  28, 15, 4,  false)
-    /* eCAP2 function */
-    MUX_CFG(DA850, ECAP2_APWM2, 1,  0,  15, 4,  false)
+	
+	/* Soft-UART flow control */
+	MUX_CFG(DA850, PRU0_R31_20,  0,  12, 15, 0,  false)
+	MUX_CFG(DA850, PRU0_R30_20,  0,  0, 15, 4,  false)
+	/* Soft-UART DIR */
+	MUX_CFG(DA850, PRU0_R30_16,  0,  24, 15, 2,  false)
+	/* eCAP0 function */
+	MUX_CFG(DA850, ECAP0_APWM0, 2,  28, 15, 2,  false)
+	
+	/* eCAP1 function */  // PRU0_R31[8]/AXR[8]/CLKS1/ECAP1_APWM1/GP0[0]Control
+	MUX_CFG(DA850, ECAP1_APWM1, 1,  28, 15, 4,  false)
+	/* eCAP2 function */  // AXR[15]/EPWM0TZ[0]/ECAP2_APWM2/GP0[7]Control
+	MUX_CFG(DA850, ECAP2_APWM2, 1,  0,  15, 4,  false)
 
+	// nmy add for pwm start
+	// EPWM1A/SPI1_SCSn1/GP2[15]
+	MUX_CFG(DA850, EPWM1A, 	    5,  0,  15, 2,  false)
+	// EPWM0B/SPI0_ENAn/EMAC_MII_RXDN
+	MUX_CFG(DA850, EPWM0B, 	    3,  4,  15, 2,  false)
+	// nmy add for pwm end
 #endif
 };
+
+// nmy add for pwm start
+const short da850_pwm_pins[] __initdata = {
+	DA850_EPWM1A,
+	DA850_EPWM0B,
+	DA850_ECAP2_APWM2,
+	DA850_ECAP1_APWM1,
+	-1
+};
+// nmy add for pwm end
+
 
 const short da850_uart0_pins[] __initdata = {
 	DA850_NUART0_CTS, DA850_NUART0_RTS, DA850_UART0_RXD, DA850_UART0_TXD,
