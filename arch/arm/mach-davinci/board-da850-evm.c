@@ -663,8 +663,10 @@ static struct davinci_mcbsp_platform_data da850_mcbsp1_config = {
 
 static int da850_evm_mmc_get_ro(int index)
 {
-	return gpio_get_value(DA850_MMCSD_WP_PIN);
+	//return gpio_get_value(DA850_MMCSD_WP_PIN);
+	return 0;
 }
+
 
 static int da850_evm_mmc_get_cd(int index)
 {
@@ -1131,10 +1133,10 @@ static __init void da850_evm_init(void)
 	//----------------------------------------------------------------------------//
 	// 在此之前，uart0 能接收数据，不能发送数据，uart1 一旦打开就会提示 太多中断
 	// 增加这一句之后，uart0可以正常收发数据，uart1还是不行
-    ret = da8xx_pinmux_setup(da850_uart0_pins);
+    	ret = da8xx_pinmux_setup(da850_uart0_pins);
 	if (ret)
 		pr_warning("da850_evm_init: uart0 mux setup failed: %d\n",ret);
-    ret = da8xx_pinmux_setup(da850_uart1_pins);
+    	ret = da8xx_pinmux_setup(da850_uart1_pins);
 	if (ret)
 		pr_warning("da850_evm_init: uart1 mux setup failed: %d\n",ret);
 	//----------------------------------------------------------------------------//
@@ -1153,15 +1155,21 @@ static __init void da850_evm_init(void)
 		pr_warning("da830_evm_init: watchdog registration failed: %d\n",
 				ret);
 #if 1
-	if (HAS_MMC) {
+	//if (HAS_MMC) {
 		ret = da8xx_pinmux_setup(da850_mmcsd0_pins);
 		if (ret)
 			pr_warning("da850_evm_init: mmcsd0 mux setup failed:"
+					" %d\n", ret);
+		else
+			pr_warning("da850_evm_init: mmcsd0 mux setup ok:"
 					" %d\n", ret);
 
 		ret = gpio_request(DA850_MMCSD_CD_PIN, "MMC CD\n");
 		if (ret)
 			pr_warning("da850_evm_init: can not open GPIO %d\n",
+					DA850_MMCSD_CD_PIN);
+		else
+			pr_warning("da850_evm_init: can ok open GPIO %d\n",
 					DA850_MMCSD_CD_PIN);
 		gpio_direction_input(DA850_MMCSD_CD_PIN);
 
@@ -1169,13 +1177,19 @@ static __init void da850_evm_init(void)
 		if (ret)
 			pr_warning("da850_evm_init: can not open GPIO %d\n",
 					DA850_MMCSD_WP_PIN);
+		else
+			pr_warning("da850_evm_init: can ok open GPIO %d\n",
+					DA850_MMCSD_WP_PIN);
 		gpio_direction_input(DA850_MMCSD_WP_PIN);
 
 		ret = da8xx_register_mmcsd0(&da850_mmc_config);
 		if (ret)
 			pr_warning("da850_evm_init: mmcsd0 registration failed:"
 					" %d\n", ret);
-	}
+		else
+			pr_warning("da850_evm_init: mmcsd0 registration ok:"
+					" %d\n", ret);
+	//}
 #endif
 
 	davinci_serial_init(&da850_evm_uart_config);
@@ -1194,6 +1208,7 @@ static __init void da850_evm_init(void)
 			ARRAY_SIZE(da850_evm_i2c_devices));
 #endif
 	
+#if 0
 	if (HAS_MMC) { 
   		ret = da8xx_pinmux_setup(da850_nand_pins); 
   		pr_warning("lierda_nand_pinmux %d\n", ret); 
@@ -1203,6 +1218,7 @@ static __init void da850_evm_init(void)
   		platform_add_devices(lsd_am1808_devices, 
         		ARRAY_SIZE(lsd_am1808_devices)); 
 	} 
+#endif
 
 #if 0
 	ret = gpio_request(0*16+0, "GPIO0[0]");
@@ -1322,7 +1338,7 @@ static __init void da850_evm_init(void)
 		pr_warning("da850_evm_init: suspend registration failed: %d\n",
 				ret);
 #endif
-#if 0
+#if 1
 	ret = da8xx_pinmux_setup(da850_spi1_pins);
 	if (ret)
 		pr_warning("da850_evm_init: spi1 mux setup failed: %d\n",

@@ -13,6 +13,10 @@ case "$1" in
         echo "Starting $SRC make uImage CROSS_COMPILE=$CROSS_COMPILE ARCH=$ARCH"
         make CROSS_COMPILE=$CROSS_COMPILE ARCH=$ARCH uImage
         ;;
+    menuconfig)
+        echo "Starting $SRC make menuconfig CROSS_COMPILE=$CROSS_COMPILE ARCH=$ARCH"
+        make CROSS_COMPILE=$CROSS_COMPILE ARCH=$ARCH menuconfig
+        ;;
     modules|m)
         echo "Starting $SRC make modules CROSS_COMPILE=$CROSS_COMPILE ARCH=$ARCH"
         make CROSS_COMPILE=$CROSS_COMPILE ARCH=$ARCH modules
@@ -42,7 +46,7 @@ case "$1" in
 	fi
         ;;
     *)
-        echo "Usage: $0 {clean|c|uImage|k|modules|m}"
+        echo "Usage: $0 {clean|c|uImage|k|modules|m|menuconfig}"
 	echo "Usage: $0 minstall|mi PATH"
 	echo "Usage: $0 kinstsall|ki PATH"
         exit 1
