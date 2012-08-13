@@ -41,6 +41,8 @@ vmlinuz
 System.map
 Module.markers
 Module.symvers
+arch/arm/boot/compressed/piggy.gzip
+arch/arm/kernel/asm-offsets.s
 !.gitignore
 !.mailmap
 

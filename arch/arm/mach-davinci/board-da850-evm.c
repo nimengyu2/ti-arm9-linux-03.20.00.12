@@ -1133,9 +1133,11 @@ static __init void da850_evm_init(void)
 	//----------------------------------------------------------------------------//
 	// 在此之前，uart0 能接收数据，不能发送数据，uart1 一旦打开就会提示 太多中断
 	// 增加这一句之后，uart0可以正常收发数据，uart1还是不行
+#if 0
     	ret = da8xx_pinmux_setup(da850_uart0_pins);
 	if (ret)
 		pr_warning("da850_evm_init: uart0 mux setup failed: %d\n",ret);
+#endif
     	ret = da8xx_pinmux_setup(da850_uart1_pins);
 	if (ret)
 		pr_warning("da850_evm_init: uart1 mux setup failed: %d\n",ret);
