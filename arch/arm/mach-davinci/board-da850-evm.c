@@ -558,41 +558,41 @@ static struct tps6507x_board tps_board = {
 /* 
   * TSC 2007 Support 
   */ 
-#define TSC2007_GPIO_IRQ_PIN  GPIO_TO_PIN(2, 6) 
+#define TSC2007_GPIO_IRQ_PIN  GPIO_TO_PIN(5, 5) 
  
 static int tsc2007_init_irq(void) 
 { 
-  int ret = 0; 
+	int ret = 0; 
                 //pr_warning("%s: lierda_tcs2007_init_irq %d\n", __func__, ret); 
  
-  ret = gpio_request(TSC2007_GPIO_IRQ_PIN, "tsc2007-irq"); 
-  if (ret < 0) { 
-    pr_warning("%s: failed to TSC2007 IRQ GPIO: %d\n", 
-                __func__, ret); 
-    return ret; 
-  } 
+	ret = gpio_request(TSC2007_GPIO_IRQ_PIN, "tsc2007-irq"); 
+	if (ret < 0) { 
+    		pr_warning("%s: failed to TSC2007 IRQ GPIO: %d\n", 
+               		__func__, ret); 
+    		return ret; 
+  	} 
  
-  ret = davinci_cfg_reg(DA850_GPIO2_6); 
-  if (ret) { 
-    pr_warning("%s: PinMux setup for GPIO %d failed: %d\n", 
-          __func__, TSC2007_GPIO_IRQ_PIN, ret); 
-    return ret; 
-  } 
+  	ret = davinci_cfg_reg(DA850_GPIO5_5); 
+  	if (ret) { 
+    		pr_warning("%s: PinMux setup for GPIO %d failed: %d\n", 
+         		 __func__, TSC2007_GPIO_IRQ_PIN, ret); 
+    		return ret; 
+  	} 
  
-  gpio_direction_input(TSC2007_GPIO_IRQ_PIN); 
+  	gpio_direction_input(TSC2007_GPIO_IRQ_PIN); 
  
-  return ret; 
+  	return ret; 
 } 
  
 static void tsc2007_exit_irq(void) 
 { 
-  gpio_free(TSC2007_GPIO_IRQ_PIN); 
+	gpio_free(TSC2007_GPIO_IRQ_PIN); 
 } 
  
 static int tsc2007_get_irq_level(void) 
 { 
-  //pr_warning("%s: lierda_tsc2007_get_irq_level %d\n", __func__, 0); 
-  return gpio_get_value(TSC2007_GPIO_IRQ_PIN) ? 0 : 1; 
+	//pr_warning("%s: lierda_tsc2007_get_irq_level %d\n", __func__, 0); 
+	return gpio_get_value(TSC2007_GPIO_IRQ_PIN) ? 0 : 1; 
 } 
  
 struct tsc2007_platform_data da850evm_tsc2007data = { 
@@ -608,10 +608,12 @@ struct tsc2007_platform_data da850evm_tsc2007data = {
 //----------------------------------------------------------------------------// 
 
 static struct i2c_board_info __initdata da850_evm_i2c_devices[] = {
+#if 1 
 	{
 	   I2C_BOARD_INFO("tsc2007", 0x48), 
   	   .platform_data = &da850evm_tsc2007data, 
 	},
+#endif
 	{
 		I2C_BOARD_INFO("tlv320aic3x", 0x18),
 	},
@@ -1197,7 +1199,7 @@ static __init void da850_evm_init(void)
 	// nmy    修改关于tsc2007  触摸屏芯片的使用      start      2010-12-10    14:00 
 	//----------------------------------------------------------------------------// 
 	//pr_warning("%s: lierda_interrupt tsc2007 init %d\n", __func__, ret); 
-    da850_evm_i2c_devices[0].irq = gpio_to_irq(TSC2007_GPIO_IRQ_PIN), 
+	da850_evm_i2c_devices[0].irq = gpio_to_irq(TSC2007_GPIO_IRQ_PIN), 
 	//i2c_register_board_info(1, &da850_evm_i2c_devices[0], 1); 
 	//----------------------------------------------------------------------------// 
 	// nmy    修改关于tsc2007  触摸屏芯片的使用   end      2010-12-10    14:00 
@@ -1343,12 +1345,12 @@ static __init void da850_evm_init(void)
 			ARRAY_SIZE(da850_spi_board_info));
 #endif 
 	da850_evm_usb_init();
-#if 0
+
 	ret = da8xx_register_sata();
 	if (ret)
 		pr_warning("da850_evm_init: SATA registration failed: %d\n",
 						ret);
-
+#if 0
 	if (HAS_VPIF_DISPLAY || HAS_VPIF_CAPTURE) {
 		ret = da850_register_vpif();
 		if (ret)

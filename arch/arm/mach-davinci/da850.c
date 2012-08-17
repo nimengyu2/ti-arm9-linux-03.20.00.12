@@ -730,6 +730,8 @@ static const struct mux_config da850_pins[] = {
    	MUX_CFG(DA850, GPIO8_12,    18, 20, 15, 8,  false)
 	// EPWM0B
 	MUX_CFG(DA850,EPWM0B,		3,	4,	15,	2,	false)
+
+	MUX_CFG(DA850,GPIO5_5,		12,	8,	15,	8,	false)
 	// nmy modify end at 20111027 14:23
 #endif
 };

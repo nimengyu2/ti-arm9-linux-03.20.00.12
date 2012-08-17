@@ -13,6 +13,10 @@ case "$1" in
         echo "Starting $SRC make uImage CROSS_COMPILE=$CROSS_COMPILE ARCH=$ARCH"
         make CROSS_COMPILE=$CROSS_COMPILE ARCH=$ARCH uImage
         ;;
+    menuconfig)
+        echo "Starting $SRC make menuconfig CROSS_COMPILE=$CROSS_COMPILE ARCH=$ARCH"
+        make CROSS_COMPILE=$CROSS_COMPILE ARCH=$ARCH menuconfig
+        ;;
     modules|m)
         echo "Starting $SRC make modules CROSS_COMPILE=$CROSS_COMPILE ARCH=$ARCH"
         make CROSS_COMPILE=$CROSS_COMPILE ARCH=$ARCH modules

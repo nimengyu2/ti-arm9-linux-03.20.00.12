@@ -20,7 +20,7 @@
 
 #define M_LSD_DBG  1
 #define M_LSD_AUDIO_DBG  0
-#define M_LSD_AUDIO_MCBSP  1   // 选择使用mcbsp还是mcasp
+#define M_LSD_AUDIO_MCBSP  0   // 选择使用mcbsp还是mcasp
 
 
 // all debug
