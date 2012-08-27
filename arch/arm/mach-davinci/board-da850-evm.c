@@ -1049,7 +1049,8 @@ static __init void da850_evm_usb_init(void)
 
 
 static struct davinci_i2c_platform_data da850_davinci_i2c_pdata = {
-	.bus_freq	= 10,
+	//.bus_freq	= 10,
+	.bus_freq	= 100,
 	.bus_delay	= 0,
 };
 
@@ -1057,7 +1058,8 @@ static struct davinci_i2c_platform_data da850_davinci_i2c_pdata = {
 static struct i2c_gpio_platform_data da850_gpio_i2c_pdata = {
 	.sda_pin	= GPIO_TO_PIN(1, 4),
 	.scl_pin	= GPIO_TO_PIN(1, 5),
-	.udelay		= 2,			/* 250 KHz */
+	//.udelay		= 200,			/* 250 KHz */
+	.udelay		= 2,	
 };
 
 static struct platform_device da850_gpio_i2c = {
@@ -1143,8 +1145,8 @@ static __init void da850_evm_init(void)
 		pr_warning("da850_evm_init: i2c0 mux setup failed: %d\n",
 				ret);
 
-	//platform_device_register(&da850_gpio_i2c);
-	da8xx_register_i2c(0,&da850_davinci_i2c_pdata);
+	platform_device_register(&da850_gpio_i2c);
+	//da8xx_register_i2c(0,&da850_davinci_i2c_pdata);
 
 	ret = da8xx_register_watchdog();
 	if (ret)
