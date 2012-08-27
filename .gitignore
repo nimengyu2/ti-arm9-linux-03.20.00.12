@@ -43,6 +43,9 @@ Module.markers
 Module.symvers
 !.gitignore
 !.mailmap
+arch/arm/boot/compressed/piggy.gzip
+arch/arm/kernel/asm-offsets.s
+kernel/bounds.s
 
 #
 # Generated include files

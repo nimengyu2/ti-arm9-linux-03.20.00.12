@@ -773,6 +773,7 @@ static const struct mux_config da850_pins[] = {
 
 	MUX_CFG(DA850, PRU0_R30_28,  13,	20,  15, 1,  false)
 	MUX_CFG(DA850, PRU0_R30_27,  13,	24,  15, 1,  false)
+	MUX_CFG(DA850, PRU0_R30_31,  13,	8,  15, 1,  false)
 	
 	// EPWM0B
 	MUX_CFG(DA850,EPWM0B,		3,	4,	15,	2,	false)
@@ -780,11 +781,22 @@ static const struct mux_config da850_pins[] = {
 	MUX_CFG(DA850, GPIO8_13,	18,	16,	15,	8,	false)
 	MUX_CFG(DA850, GPIO6_0,		19,	24,	15,	8,	false)
 
+	// EPWM1A/SPI1_SCSn1/GP2[15]
+	MUX_CFG(DA850, EPWM1A, 	    5,  0,  15, 2,  false)
+	// EPWM0B/SPI0_ENAn/EMAC_MII_RXDN
+	MUX_CFG(DA850, EPWM0B, 	    3,  4,  15, 2,  false)
+
 #endif
 };
 
+const short da850_epwm01_pins[] __initdata = {
+	DA850_EPWM0B,
+	DA850_EPWM1A,
+};
+
+
 const short da850_pru_suart_485_dir_pins[] __initdata = {
-		DA850_PRU0_R30_19,
+	DA850_PRU0_R30_19,
     	DA850_PRU0_R30_20,
     	DA850_PRU0_R30_23,
 };
@@ -811,10 +823,11 @@ const short da850_pru_suart_pins[] __initdata = {
 	/*DA850_UART1_RXD, DA850_UART1_TXD,*/ DA850_PRU0_R30_16,
 	// nmy modify	
 	DA850_PRU0_R30_19,
-    DA850_PRU0_R30_20,
-    DA850_PRU0_R30_23,
+    	DA850_PRU0_R30_20,
+    	DA850_PRU0_R30_23,
 	DA850_PRU0_R30_28,
 	DA850_PRU0_R30_27,
+	DA850_PRU0_R30_31,
 	-1
 };
 

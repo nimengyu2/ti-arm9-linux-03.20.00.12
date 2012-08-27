@@ -200,6 +200,7 @@ extern const short da830_ecap2_pins[];
 extern const short da830_eqep0_pins[];
 extern const short da830_eqep1_pins[];
 
+extern const short da850_epwm01_pins[];
 extern const short da850_pru_suart_485_dir_pins[];
 extern const short da850_uart0_pins[];
 extern const short da850_uart1_pins[];

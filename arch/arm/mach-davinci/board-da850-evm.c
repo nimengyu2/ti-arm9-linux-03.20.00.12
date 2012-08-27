@@ -941,8 +941,8 @@ static int da850_evm_usb_get_power(unsigned port)
 
 static int da850_evm_usb_get_oci(unsigned port)
 {
-	return !gpio_get_value(DA850_USB1_OC_PIN);
-	//return !1;
+	//return !gpio_get_value(DA850_USB1_OC_PIN);
+	return !1;
 }
 
 static irqreturn_t da850_evm_usb_ocic_irq(int, void *);
@@ -1031,7 +1031,8 @@ static __init void da850_evm_usb_init(void)
 		return;
 	}
 	gpio_direction_output(DA850_USB1_VBUS_PIN, 0);
-
+#endif
+#if 0
 	ret = gpio_request(DA850_USB1_OC_PIN, "USB1 OC");
 	if (ret) {
 		printk(KERN_ERR "%s: failed to request GPIO for USB 1.1 port "
@@ -1100,8 +1101,8 @@ static int __init da850_evm_config_pru_suart(void)
     if (!machine_is_davinci_da850_evm())
         return 0;
 
-    ret = da8xx_pinmux_setup(da850_pru_suart_pins);
-    if (ret)
+    	ret = da8xx_pinmux_setup(da850_pru_suart_pins);
+    	if (ret)
         pr_warning("da850_evm_init: da850_pru_suart_pins mux setup failed: %d\n",
                 ret);
 	else
@@ -1184,6 +1185,7 @@ static __init void da850_evm_init(void)
 					" %d\n", ret);
 	}
 */
+
 	ret = da8xx_pinmux_setup(da850_uart0_pins);
 		if (ret)
 			pr_warning("da850_evm_init: uart0 mux setup failed:"
@@ -1339,17 +1341,18 @@ static __init void da850_evm_init(void)
 
 	}
 */
-    ret = davinci_cfg_reg(DA850_ECAP2_APWM2);
-    if (ret)
-        pr_warning("da850_evm_init:ecap mux failed: %d\n", ret);
+#if 0
+	ret = davinci_cfg_reg(DA850_ECAP2_APWM2);
+	if (ret)
+	pr_warning("da850_evm_init:ecap mux failed: %d\n", ret);
 
-    ret = da850_register_ecap(2);
-    if (ret)
-        pr_warning("da850_evm_init: eCAP registration failed: %d\n",
-                   ret);
+	ret = da850_register_ecap(2);
+	if (ret)
+	pr_warning("da850_evm_init: eCAP registration failed: %d\n",
+		   ret);
 	else
 	 	pr_warning("da850_evm_init: eCAP registration ok: %d\n",
-                   ret);
+		   ret);
 
 	//  
 	clk_enable(&pwm1_clk);
@@ -1370,7 +1373,13 @@ static __init void da850_evm_init(void)
 		return;
 	}
 	gpio_direction_output(2*16+15, 1);
+#endif
+	ret = da8xx_pinmux_setup(da850_epwm01_pins);
+	if (ret)
+		pr_warning("da850_evm_init: epwm01 mux setup failed:"
+				" %d\n", ret);
 
+	clk_enable(&pwm1_clk);
 }
 
 #ifdef CONFIG_SERIAL_8250_CONSOLE
