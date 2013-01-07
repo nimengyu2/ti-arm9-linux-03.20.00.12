@@ -1210,7 +1210,7 @@ static __init void da850_evm_init(void)
 			ARRAY_SIZE(da850_evm_i2c_devices));
 #endif
 	
-#if 0
+#if 1
 	if (HAS_MMC) { 
   		ret = da8xx_pinmux_setup(da850_nand_pins); 
   		pr_warning("lierda_nand_pinmux %d\n", ret); 
