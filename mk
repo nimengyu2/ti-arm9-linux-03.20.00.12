@@ -55,7 +55,7 @@ esac
 
 exit 0
 
-
+# test
 #DAEMON=/usr/sbin/pcscd
 #NAME=pcscd
 #DESC="PCSC Daemon"
